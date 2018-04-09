@@ -1,0 +1,65 @@
+<!-- This is the base template for all of the pages on the website. It will be included in every html file in the templates folder. -->
+
+{% extends "bootstrap/base.html" %}
+
+<!-- This allows for dynamic title attribute for each html page, just pass the argument title with a value in the specified route function -->
+	{% block title %}
+		{% if title %}{{ title }} - ODC{% else %}Welcome to the Online Distribution Center{% endif %} 
+	{% endblock %}
+
+{% block navbar %}
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!-- Path of the home page route goes in the href below, can use url_for function -->
+                <a class="navbar-brand" href="#"><i class="fa fa-database"></i> ODC</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav">
+                	<!-- Path of the home page route goes in the href below, can use url_for function -->
+                    <li><a href="#">Home</a></li> 
+                    {% if not current_user.is_anonymous %}
+                    <!-- Path of the products route goes in the href below, can use url_for function -->
+                    <li><a href="#">My Products</a></li>
+                    {% endif %}
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                    <!-- Path of the login route goes in the href below, can use url_for function -->
+                    <li><a href="#">Login</a></li>
+                    {% else %}
+                    <!-- Path of the profile route goes in the href below. 
+                    	Ideally, route should be /user/<username>, where <username> is the username of the current user, can use url_for function -->
+                    <li><a href="#">Profile</a></li>
+                    <!-- Path of the logout route goes in the href below, can use url_for function -->
+                    <li><a href="#">Logout</a></li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+	<!-- The below allows for the use of the function flash() in the routes file to display an error message.
+		The messages are automatically rendered in the respective template with the below code, so all you must
+		do is call flash("ERROR_MESSAGE_HERE") in the respective route function. -->
+    <div class="container">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-info" role="alert">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- content of an html template file goes between the below app_content blocks in the respective file -->
+        {% block app_content %}{% endblock %}
+    </div>
+{% endblock %}
