@@ -2,13 +2,18 @@
 
 {% extends "bootstrap/base.html" %}
 
+{% block styles %}
+	{{ super() }}
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
 <!-- This allows for dynamic title attribute for each html page, just pass the argument title with a value in the specified route function -->
-	{% block title %}
-		{% if title %}{{ title }} - ODC{% else %}Welcome to the Online Distribution Center{% endif %} 
-	{% endblock %}
+{% block title %}
+	{% if title %}{{ title }} - ODC{% else %}Welcome to the Online Distribution Center{% endif %} 
+{% endblock %}
 
 {% block navbar %}
-    <nav class="navbar navbar-default">
+    <nav class="navbar navbar-inverse">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -18,12 +23,12 @@
                     <span class="icon-bar"></span>
                 </button>
                 <!-- Path of the home page route goes in the href below, can use url_for function -->
-                <a class="navbar-brand" href="#"><i class="fa fa-database"></i> ODC</a>
+                <a class="navbar-brand" href="/"><i class="fa fa-database"></i> ODC</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                 	<!-- Path of the home page route goes in the href below, can use url_for function -->
-                    <li><a href="#">Home</a></li> 
+                    <li><a href="/">Home</a></li> 
                     {% if not current_user.is_anonymous %}
                     <!-- Path of the products route goes in the href below, can use url_for function -->
                     <li><a href="#">My Products</a></li>
@@ -32,7 +37,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
                     <!-- Path of the login route goes in the href below, can use url_for function -->
-                    <li><a href="#">Login</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                     {% else %}
                     <!-- Path of the profile route goes in the href below. 
                     	Ideally, route should be /user/<username>, where <username> is the username of the current user, can use url_for function -->

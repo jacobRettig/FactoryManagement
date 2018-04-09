@@ -7,6 +7,11 @@ from odc_app import app
 from odc_app.forms import LoginForm, RegistrationForm
 from flask import render_template, url_for
 
+@app.route('/', methods=['GET'])
+@app.route('/index', methods=['GET'])
+def index():
+	return render_template('index.html', title='Home Page')
+
 @app.route('/login', methods=['GET'])
 def login():
 	form = LoginForm()
