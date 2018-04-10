@@ -19,7 +19,7 @@ def login():
 		pass
 	return render_template('login.html', title='Sign In', form=form)
 
-@app.route('/register', methods=['GET'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
 	form = RegistrationForm()
 	if form.validate_on_submit():

@@ -3,14 +3,15 @@
 
 #imports
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DateField, validators
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, validators
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError, Length
+from wtforms.fields.html5 import DateField
 import phonenumbers
 
 class RegistrationForm(FlaskForm):
 	first_name = StringField('First Name', validators=[DataRequired()])
 	last_name = StringField('Last Name', validators=[DataRequired()])
-	dob = DateField('Date of Birth', validators=[DataRequired()])
+	dob = DateField('Date of Birth', validators=[DataRequired()], format='%Y-%m-%d')
 	phone = StringField('Phone', validators=[DataRequired()])
 	email = StringField('Email', validators=[DataRequired(), Email()])
 	username = StringField('Username', validators=[DataRequired()])

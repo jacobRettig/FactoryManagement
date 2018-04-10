@@ -1,0 +1,12 @@
+.center-col {
+	-webkit-box-shadow: 0px 0px 11px -2px rgba(102,102,102,1);
+	-moz-box-shadow: 0px 0px 11px -2px rgba(102,102,102,1);
+	box-shadow: 0px 0px 11px -2px rgba(102,102,102,1);
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding-bottom: 10px;
+}
+
+.center-col > h1 {
+	text-align: center;
+}

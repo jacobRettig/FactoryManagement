@@ -16,6 +16,7 @@ pip.main(['install', '-U', 'flask_wtf'])
 pip.main(['install', '-U', 'wtforms'])
 pip.main(['install', '-U', 'phonenumbers'])
 pip.main(['install', '-U', 'flask_sqlalchemy'])
+pip.main(['install', '-U', 'flask_admin'])
 
 
 #imports
@@ -25,11 +26,14 @@ from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
 from config import Config
 from flask_login import LoginManager
+from flask_admin import Admin
+from flask_basicauth import BasicAuth
 
 app = Flask(__name__)
 app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login' # Name of route that user is redirected to for logging in
+admin = Admin(app, name='odc_app', template_mode='bootstrap3') # Very basic admin panel setup, not finished yet
 
 from odc_app import routes
