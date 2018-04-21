@@ -5,9 +5,10 @@
 {% block styles %}
 	{{ super() }}
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css">
 {% endblock %}
 
-<!-- This allows for dynamic title attribute for each html page, just pass the argument title with a value in the specified route function -->
+<!-- This allows for dynamic title attribute for each html page, just pass the argument "title" with a value in the specified route function -->
 {% block title %}
 	{% if title %}{{ title }} - ODC{% else %}Welcome to the Online Distribution Center{% endif %} 
 {% endblock %}
@@ -22,17 +23,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <!-- Path of the home page route goes in the href below, can use url_for function -->
+                <!-- Path of the home page route goes in the href below -->
                 <a class="navbar-brand" href="/"><i class="fa fa-database"></i> ODC</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                	<!-- Path of the home page route goes in the href below, can use url_for function -->
+                	<!-- Path of the home page route goes in the href below -->
                     <li><a href="/">Home</a></li> 
-                    {% if not current_user.is_anonymous %}
-                    <!-- Path of the products route goes in the href below, can use url_for function -->
-                    <li><a href="#">My Products</a></li>
-                    {% endif %}
+                    <!-- Path of the products route goes in the href below -->
+                    <li><a href="/products">My Products</a></li>
+                    <li><a href="/products/new">New Product</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
@@ -52,7 +52,7 @@
 {% endblock %}
 
 {% block content %}
-	<!-- The below allows for the use of the function flash() in the routes file to display an error message.
+	<!-- The below allows for the use of the function flash() in the routes.py file to display an error message.
 		The messages are automatically rendered in the respective template with the below code, so all you must
 		do is call flash("ERROR_MESSAGE_HERE") in the respective route function. -->
     <div class="container">

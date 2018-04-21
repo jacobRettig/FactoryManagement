@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block head %}
+	{{ super() }}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/form.css') }}">
+{% endblock %}
+
+{% block app_content %}
+	<div class="ui main text container segment">
+		<div class="ui huge header text-center">Create Product</div>
+		{{ wtf.quick_form(form) }}
+		<br>
+		<p>Not finding your product category? Click <a href="/categories/new">here</a> to create a new one.</p>
+	</div>
+{% endblock %}
