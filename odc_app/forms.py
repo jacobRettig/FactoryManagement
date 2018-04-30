@@ -10,34 +10,40 @@ import phonenumbers
 
 def getRegistrationForm(regions):
     class RegistrationForm(FlaskForm):
-            first_name = StringField('First Name', validators=[DataRequired()])
-            last_name = StringField('Last Name', validators=[DataRequired()])
-            dob = DateField('Date of Birth', validators=[DataRequired()], format='%Y-%m-%d')
-            phone = StringField('Phone', validators=[DataRequired()])
-            region = SelectField('Region', choices=list(map(lambda x:(x, x), regions)), validators=[DataRequired()])
-            country = StringField('Country', validators=[DataRequired()])
-            addressFirstLine = StringField('1st Line Address', validators=[DataRequired()])
-            addressSecondLine = StringField('2nd Line Address')
-            email = StringField('Email', validators=[DataRequired(), Email()])
-            password = PasswordField('Password', validators=[DataRequired()])
-            password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
-            submit = SubmitField('Register')
+        first_name = StringField('First Name', validators=[DataRequired()])
+        last_name = StringField('Last Name', validators=[DataRequired()])
+        dob = DateField('Date of Birth', validators=[DataRequired()], format='%Y-%m-%d')
+        phone = StringField('Phone', validators=[DataRequired()])
+        """ 
+        Leaving the line below commented for now because it breaks the registration page otherwise,
+        since the database isn't fully functional yet. Uncomment when regions has the appropriate data
+        queried from the database.
 
-            def validate_phone(self, phone):
-                    if len(phone.data) > 16:
-                            raise ValidationError('Invalid phone number.')
-                    try:
-                            input_number = phonenumbers.parse(phone.data)
-                            if not (phonenumbers.is_valid_number(input_number)):
-                                    raise ValidationError('Invalid phone number.')
-                    except:
-                            input_number = phonenumbers.parse("+1{}".format(phone.data))
-                            if not (phonenumbers.is_valid_number(input_number)):
-                                    raise ValidationError('Invalid phone number.')
+        """
+       	# region = SelectField('Region', choices=list(map(lambda x:(x, x), regions)), validators=[DataRequired()])
+        country = StringField('Country', validators=[DataRequired()])
+        addressFirstLine = StringField('1st Line Address', validators=[DataRequired()])
+        addressSecondLine = StringField('2nd Line Address')
+        email = StringField('Email', validators=[DataRequired(), Email()])
+        password = PasswordField('Password', validators=[DataRequired()])
+        password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')])
+        submit = SubmitField('Register')
+
+        def validate_phone(self, phone):
+            if len(phone.data) > 16:
+                raise ValidationError('Invalid phone number.')
+            try:
+                input_number = phonenumbers.parse(phone.data)
+                if not (phonenumbers.is_valid_number(input_number)):
+                    raise ValidationError('Invalid phone number.')
+            except:
+                input_number = phonenumbers.parse("+1{}".format(phone.data))
+                if not (phonenumbers.is_valid_number(input_number)):
+                    raise ValidationError('Invalid phone number.')
     return RegistrationForm()
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()])
+    username = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')

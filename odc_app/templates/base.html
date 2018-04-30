@@ -31,19 +31,18 @@
                 	<!-- Path of the home page route goes in the href below -->
                     <li><a href="/">Home</a></li> 
                     <!-- Path of the products route goes in the href below -->
-                    <li><a href="/products">My Products</a></li>
-                    <li><a href="/products/new">New Product</a></li>
+                    {% if not current_user.is_anonymous %}
+                    	<li><a href="/products">My Products</a></li>
+                    	<li><a href="/products/new">New Product</a></li>
+                    {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
-                    <!-- Path of the login route goes in the href below, can use url_for function -->
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
+	                    <!-- Path of the login route goes in the href below, can use url_for function -->
+	                    <li><a href="{{ url_for('login') }}">Login</a></li>
                     {% else %}
-                    <!-- Path of the profile route goes in the href below. 
-                    	Ideally, route should be /user/<username>, where <username> is the username of the current user, can use url_for function -->
-                    <li><a href="#">Profile</a></li>
-                    <!-- Path of the logout route goes in the href below, can use url_for function -->
-                    <li><a href="#">Logout</a></li>
+	                    <!-- Path of the logout route goes in the href below, can use url_for function -->
+	                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
                     {% endif %}
                 </ul>
             </div>

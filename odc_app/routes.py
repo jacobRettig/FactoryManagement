@@ -7,7 +7,7 @@ for the purposes of rendering the static pages for testing the desgin.
 from odc_app import app
 from odc_app.forms import LoginForm, getRegistrationForm, CreateProductForm, CreateCategoryForm
 from flask import render_template, url_for, redirect, abort
-from flask_login import UserMixin, login_user, login_required
+from flask_login import UserMixin, login_user, login_required, login_manager
 import odc_app.sqlHandler as DB
 
 
@@ -55,7 +55,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = RegistrationForm(DB.getRegions())
+    form = getRegistrationForm(DB.getRegions())
     if form.validate_on_submit():
         if DB.createUser('Customer', form['Email'], form['Password'], form['First Name'], form['Last Name'], form['Phone'], form['Date of Birth'], form['Country'], form['Region'], form['1st Line Address'], form['2nd Line Address']):
             login_user(User.createUser(form['Email'], form['Password']))
@@ -94,4 +94,12 @@ def create_category():
         # Save new category to database
         return redirect(url_for('products'))
     return render_template('new_category.html', title='Create Category', form=form)
+
+@app.errorhandler(401)
+def unauthorized_access(e):
+	return render_template('401.html', title='Unauthorized Access'), 401
+
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html', title='Page Not Found'), 404
 
