@@ -22,6 +22,17 @@ class product(BaseProvider):
         x = str.split()
         return x
 fake.add_provider(product)
+#################################################
+class states2(BaseProvider):
+    def state1(self):
+        a=[]
+        str='full outoforder lessaverage aboveaverage good'
+
+        x=str.split( )
+
+        return random.choice(x)
+
+fake.add_provider(states2)
 ############################################################
 def role():
     str = 'admin warehousemanager user '
@@ -123,16 +134,47 @@ def status():
 
     return random.choice(x)
 ##################################
+class country(BaseProvider):
+    def country(self):
+        a=[]
+        str='China American Spanish Swaziland Canada Benin Brazil'
+
+        x=str.split( )
+
+        return random.choice(x)
+    def allcountries(self):
+        a = []
+        str = 'China American Spanish Swaziland Canada Benin Brazil'
+        x = str.split()
+        return x
+fake.add_provider(country)
+##################################################
+def prefix(a):
+    if a=='China':
+        return '018'
+    if a=='American':
+        return '1'
+    if a=='Spanish':
+        return '2'
+    if a=='Swaziland':
+        return '3'
+    if a== 'Canada':
+        return '4'
+    if a== 'Benin':
+        return '5'
+    if a=='Brazil':
+        return'6'
+##################################
 def regiondes(a):
-    if a=='NorthAmerica':
+    if a=='Canada' or 'America':
         return 'north America'
-    if a=='south America':
+    if a=='Brazil':
         return 'south America'
-    if a=="Asian":
+    if a=="China":
         return 'Asian'
-    if a =='Africa':
+    if a =='Benin':
         return 'Africa'
-    if a=="European":
+    if a=="Swaziland" or 'Spanish':
         return 'European'
 ######################################
 def access(a):
@@ -142,6 +184,20 @@ def access(a):
         return "charge the area"
     if a=='user':
         return "take care product and account"
+#####################################################
+def addresscount(a):
+    if len(a)>=35:
+        c=a[:35]
+        return c
+    else:
+        return a
+#################################################3
+def other(a):
+    if len(a)>=35:
+        c=a[35:]
+        return c
+
+
 ##############################################################
 class region(BaseProvider):
     def region(self):
@@ -156,149 +212,207 @@ class region(BaseProvider):
         return x
 # then add new provider to faker instance
 fake.add_provider(region)
+
+
+
+
+
+
+#start create table
+#################################################################
 ##############################################################
+#create region table
+def region():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " regionID RegionName, RegionDescription ")
+
+    c = fake.allregion()
+    for i in range(0, len(c)-1):
+        MyStruct = (i,c[i], regiondes(c[i]) )
+
+    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
+        a.append(MyStruct)
+    return a
+################################################################################
+#create country table
+def country():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " country, internationCallPrefix ")
+
+    c = fake.country()
+    for i in range(0, len(c)-1):
+        MyStruct = (c[i], prefix(c[i]) )
+
+    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
+    a.append(MyStruct)
+    return a
+###############################################################################
+#create address table
+def address():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " addressID, addresslinefirst,addresslinesecond,country, region ")
+
+
+    for i in range(100):
+        country1=fake.country()
+        MyStruct = (i, addresscount(g.street()),other(g.street()),country1,regiondes(country1) )
+
+    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
+        a.append(MyStruct)
+    return a
+##############################################################################3
+def roletable():
+    c = role()
+    a = []
+    MyStruct = namedtuple("MyStruct", "rolename, roledescription")
+
+    for i in range(0, len(c) - 1):
+        MyStruct = (c[i], roledes(c[i]))
+
+        a.append(MyStruct)
+    return a
+#################################################################################
 #create "loginformation" table
 def generatinformation():
     a=[]
-    MyStruct = namedtuple("MyStruct", "username, birthdate, password, phonenumber, userRegion, warehouseManageName, productname, email, address")
-    for i in range (1,100):
-        MyStruct=(g.name(), g.birthday(18),g.createPassword(10),g.usPhoneNumber(),fake.region(),g.name(),fake.product(),g.email(),g.usAddress())
+    MyStruct = namedtuple("MyStruct", "birthdate, password, phonenumber, email,firstname, lastname,addressID, rolename")
+    k=address()
+    c=role()
+
+
+    for i in range (3):
+
+        MyStruct=( g.birthday(18),g.createPassword(10),g.usPhoneNumber(),g.email(g.firstName(),g.lastName()),g.firstName(),g.lastName(),k[i],'admin')
         a.append(MyStruct)
+    for i in range(3,8):
+        MyStruct = (
+        g.birthday(18), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
+        a.append(MyStruct)
+    for i in range(8,100):
+        MyStruct = (
+            g.birthday(18), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
+            'customer')
+        a.append(MyStruct)
+   # k=0
+    #
 
     return a
+#############################################################
+#create product table
+def product():
+    a = []
 
+    MyStruct = namedtuple("MyStruct", "productname, price, description, imagedata, quantity,productowner")
+    b=generatinformation()
+
+    for i in range(8,100):
+        c=fake.prodcut()
+        MyStruct = (c, productvalue(c), productdescription(c), imagedata(c), random.randint(1,1000),b[i][3])
+        a.append(MyStruct)
+    return a
+
+##############################################################
+#create table ConfigAttribute
+def ConfigAttribute():
+    a = []
+
+    MyStruct = namedtuple("MyStruct", "name description, unit, attributerowner")
+    b=product()
+
+    for i in range(8,100):
+
+        MyStruct = (categories(b[i][0]),productdescription(b[i][0]),productunit(b[i][0]),b[i][5])
+        a.append(MyStruct)
+    return a
 ##############################################################
 #create "productattribution" table
 def productattribution():
     a=[]
 
 
-    MyStruct = namedtuple("MyStruct", " username, productname, description, value, quantity,unit ")
+    MyStruct = namedtuple("MyStruct", " attributionname, productname, value ")
 
-    c = generatinformation()
-    for i in range(0,99):
-        MyStruct=(c[i][0],c[i][6],productdescription(c[i][6]),productvalue(c[i][6]),random.randint(1,1000),productunit(c[i][6]))
-
-   # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
-    a.append(MyStruct)
+    k=fake.allproduct()
+    for i in range(len(k)):
+        MyStruct=(categories(k[i]),k[i],productvalue(k[i]))
+        a.append(MyStruct)
     return a
 ################################################################
-#create product table
-def product():
-    a = []
 
-    MyStruct = namedtuple("MyStruct", "productname, price, description, imagedata, quantity")
-
-    c = fake.allproduct()
-    d=productattribution()
-    q=w=e=r=t=y=u=0
-    for i in range(0,99):
-        if d[i][1]=='book':
-            q=q+d[i][3]
-        if d[i][1]=='pen':
-            w=w+d[i][3]
-        if d[i][1]=='pencil':
-            e=e+d[i][3]
-        if d[i][1]=='desktop':
-            r=r+d[i][3]
-        if d[i][1]=='laptop':
-            t=t+d[i][3]
-        if d[i][1]=='orange':
-            y=y+d[i][3]
-        if d[i][1]=='apple':
-            u=u+d[i][3]
-
-    for i in range(0, len(c)-1):
-        if c[i]=='book':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        q)
-        if c[i]=='pen':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        w)
-        if c[i]=='pencil':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        e)
-        if c[i]=='desktop':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                       r)
-        if c[i]=='laptop':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        t)
-        if c[i]=='orange':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        y)
-        if c[i]=='apple':
-            MyStruct = ( c[i], productvalue((c[i])), productdescription(c[i]),  imagedata(c[i]),
-                        u)
-
-    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
-    a.append(MyStruct)
-    return a
-#####################################################################################
-#create region table
-def region():
-    a=[]
-    MyStruct = namedtuple("MyStruct", " RegionName, RegionDescription, WarehouseManagerName ")
-
-    c = fake.allregion()
-    for i in range(0, len(c)-1):
-        MyStruct = (c[i], regiondes(c[i]),g.name() )
-
-    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
-    a.append(MyStruct)
-    return a
-########################################################################################
-def protocat():
-    c=fake.allproduct()
-    MyStruct = namedtuple("MyStruct","productname, description, categoryname")
-
-    for i in range (0, len(c)-1):
-        MyStruct = (c[i], productdescription(c[i]), categories(c[i]))
-    a = []
-    a.append(MyStruct)
-    return a
-#########################################################################################
 #create Warehouse table
 def Warehouse():
     a=[]
-    MyStruct = namedtuple("MyStruct", " UserName, ProductName, Description, Categories, Quantity,MaxQuantity, UserRegion ")
+    MyStruct = namedtuple("MyStruct", " warehouseID, UserName, description, capacity,addressID ")
 
     c =generatinformation()
     d=productattribution()
-
-    for i in range(0, len(c)-1):
-        for j in range (0,len(d)-1):
-            if (d[j][0]==c[i][0]):
-
-                MyStruct = (c[i][0], c[i][6],categories(c[i][6]),d[j][4],random.randint(10000,100000),c[i][4] )
-
-    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
-    a.append(MyStruct)
+    k=fake.allregion()
+    for i in range(len(k)):
+        MyStruct = (i,c[i+3][3],k[i],random.randint(10000,100000),random.randint(0,99) )
+        a.append(MyStruct)
     return a
 ################################################################################################
 def Warehousestorage():
     a=[]
-    MyStruct = namedtuple("MyStruct", " ProductName, Warehouse_managername, price, state, refilldate, ProductRegion ")
-    e = region()
-    c =generatinformation()
-    d=productattribution()
-    for i in range(0, len(c)-1):
-        for j in range (0,len(d)-1):
-            if (d[j][0]==c[i][0]):
-                for k in range(0,len(e)-1 ):
-                    if c[i][4]==e[k][0]:
-                        MyStruct = (d[j][1], e[k][2],d[j][3],d[j][4],status(),g.randomDate(),e[k][0] )
+    MyStruct = namedtuple("MyStruct", " warehouseID, refilldate, state, price, ProductName ")
+    k=product()
 
-    # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
-    a.append(MyStruct)
+    for i in range(len(k)):
+        MyStruct = (random.randint(0,4),g.randomDate(),fake.state1(),productvalue(k[i][0]),k[i][0] )
+        a.append(MyStruct)
     return a
 #####################################################################################################
-def role():
-    c = role()
-    MyStruct = namedtuple("MyStruct", "rolename, roledescription, access")
-
-    for i in range(0, len(c) - 1):
-        MyStruct = (c[i], roledes(c[i]), access(c[i]))
-    a = []
-    a.append(MyStruct)
+#create table categories
+def categories():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " categoryname, isdefault, categoryDescription, categoryowner ")
+    q=generatinformation()
+    f=product()
+    s='t f'
+    k=s.split()
+    for i in range(8,100):
+        for j in range(len(f)):
+            if q[i][3]==f[j][5]:
+                MyStruct = (categories(f[j][0]),random.choice(k),categories(f[j][0]),q[i][3] )
+                a.append(MyStruct)
     return a
+##########################################################################################################
+#table producttocategories
+def producttocategories():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " categoryname, productname ")
+    c=fake.allproduct()
+    for i in range(len(c)):
+
+        MyStruct = (categories(c[i]),c[i])
+        a.append(MyStruct)
+    return a
+#############################################################################################################
+#table permission
+def permission():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " accessType, accessdescription ")
+    k=role()
+    for i in range(len(k)):
+
+        MyStruct = (k[i],roledes(k[i]))
+        a.append(MyStruct)
+    return a
+#################################################################################################################
+#table Access
+def Access():
+    a=[]
+    MyStruct = namedtuple("MyStruct", " rolename, accesstype,accesslevel ")
+    k=role()
+    for i in range(len(k)):
+        if k[i]=='admin':
+            MyStruct = (k[i],'all','b')
+            a.append(MyStruct)
+        if k[i]=='warehousemanager':
+            MyStruct = (k[i], 'selfregion', 'r')
+            a.append(MyStruct)
+        if k[i]=='customer':
+            MyStruct = (k[i], 'uploadproduct', 'n')
+            a.append(MyStruct)
+    return a
+################################################################################################################
