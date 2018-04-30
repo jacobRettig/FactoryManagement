@@ -13,10 +13,13 @@ pip.main(['install', '-U', 'Faker'])
 pip.main(['install', '-U', 'flask_bootstrap'])
 pip.main(['install', '-U', 'flask_login'])
 pip.main(['install', '-U', 'flask_wtf'])
+pip.main(['install', '-U', 'flask_basicauth'])
 pip.main(['install', '-U', 'wtforms'])
 pip.main(['install', '-U', 'phonenumbers'])
 pip.main(['install', '-U', 'flask_sqlalchemy'])
 pip.main(['install', '-U', 'flask_admin'])
+pip.main(['install', '-U', 'fakeUserData'])
+pip.main(['install', '-U', 'faker']) 
 
 
 #imports
@@ -34,6 +37,9 @@ app.config.from_object(Config)
 bootstrap = Bootstrap(app)
 login = LoginManager(app)
 login.login_view = 'login' # Name of route that user is redirected to for logging in
+login.needs_refresh_message = ('Please log in to continue.')
+login.needs_refresh_message_category = 'info'
+login.session_protection = 'strong'
 admin = Admin(app, name='odc_app', template_mode='bootstrap3') # Very basic admin panel setup, not finished yet
 
 from odc_app import routes

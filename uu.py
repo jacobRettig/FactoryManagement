@@ -1,7 +1,7 @@
 import random
 import sys
 import csv
-from fakeUserData import generator as g
+#from fakeUserData import generator as g
 from faker import Faker
 fake = Faker()
 from faker.providers import BaseProvider
