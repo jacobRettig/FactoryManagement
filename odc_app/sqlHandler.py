@@ -122,16 +122,16 @@ class Access(Base):
 def isValidLogin(email, password):
 
 	try:
-		row = session.query(LogInformation).get(self.email)
-		return row.password == self.password
+		row = session.query(LogInformation).get(email)
+		return row.password == password
 	except exc.SQLAlchemyError as e:
 		print("isValidLogin failed with: ", e)
 
-
+#NOT WORKING
 #checks if email exists (returns True/False)
 def emailExists(email):
 	try:
-		return session.query(LogInformation).filter(LogInformation.email.in_(self.email)) #emails needs to be in list?
+		return session.query(LogInformation).filter(LogInformation.email.in_(email)) #emails needs to be in list? 
 	except exc.SQLAlchemyError as e:
 		print("emailExists failed with: ", e)
 		
@@ -140,11 +140,11 @@ def emailExists(email):
 def createUser(role, email, password, firstName, lastName, phoneNumber, birthdate, country, region, addressFirstLine, addressSecondLine):
 	
 	#create address row
-	address = Address(addressLineFirst=addressFirstLine, addressLineSecond=addressSecondLine, country=self.country, regionName=region)
+	address = Address(addressLineFirst=addressFirstLine, addressLineSecond=addressSecondLine, country=country, regionName=region)
 	session.add(address)
 
 	#create user row, not sure if using address variable will work for address_id
-	user = LogInformation(birthdate=self.birthdate, password=self.password, phoneNumber=self.phoneNumber, email=self.email, firstName=self.firstName, lastName=self.lastName, addressID=address)
+	user = LogInformation(birthdate=birthdate, password=password, phoneNumber=phoneNumber, email=email, firstName=firstName, lastName=lastName, addressID=address)
 	session.add(user)
 
 	#try to commit changes to database, if it fails return False - might need to do more with exception
@@ -160,7 +160,7 @@ def getRole(email):
 	
 	#get the role name by joining the LogInformation and Role tables and filtering by email, hopefully won't return more than one row
 	try:
-		row = session.query(Role).join(LogInformation, Role.roleName==LogInformation.roleName).filter(LogInformation.email == self.email).one()
+		row = session.query(Role).join(LogInformation, Role.roleName==LogInformation.roleName).filter(LogInformation.email == email).one()
 		return row.roleName
 	except exc.SQLAlchemyError as e:
 		print("getRole failed with: ", e)
