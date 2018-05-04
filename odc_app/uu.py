@@ -208,7 +208,7 @@ class region(BaseProvider):
 fake.add_provider(region)
 ##############################################################
 #create region table
-def region():
+def region1():
     a=[]
     MyStruct = namedtuple("MyStruct", " RegionName, RegionDescription ")
 
