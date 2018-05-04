@@ -1,13 +1,12 @@
 import random
 import sys
 import csv
+import datetime
 from fakeUserData import generator as g
 from faker import Faker
 fake = Faker()
 from faker.providers import BaseProvider
 from collections import namedtuple
-import datetime
-
 ####################################################################
 # create new provider class
 class product(BaseProvider):
@@ -221,7 +220,7 @@ def region1():
     return a
 ################################################################################
 #create country table
-def country():
+def country1():
     a=[]
     MyStruct = namedtuple("MyStruct", " country, internationCallPrefix ")
 
@@ -234,7 +233,7 @@ def country():
     return a
 ###############################################################################
 #create address table
-def address():
+def address1():
     a=[]
     MyStruct = namedtuple("MyStruct", " addressID, addresslinefirst,addresslinesecond,country, region ")
 
@@ -247,7 +246,7 @@ def address():
         a.append(MyStruct)
     return a
 ##############################################################################3
-def roletable():
+def roletable1():
     c = role()
     a = []
     MyStruct = namedtuple("MyStruct", "rolename, roledescription")
@@ -259,10 +258,10 @@ def roletable():
     return a
 #################################################################################
 #create "loginformation" table
-def generatinformation():
+def generatinformation1():
     a=[]
     MyStruct = namedtuple("MyStruct", "birthdate, password, phonenumber, email,firstname, lastname,addressID, rolename")
-    k=address()
+    k=address1()
     c=role()
 
 
@@ -272,7 +271,7 @@ def generatinformation():
         a.append(MyStruct)
     for i in range(3,8):
         MyStruct = (
-        datetime.datetime.utcnow(), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
+            datetime.datetime.utcnow(), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
         a.append(MyStruct)
     for i in range(8,100):
         MyStruct = (
@@ -285,11 +284,11 @@ def generatinformation():
     return a
 #############################################################
 #create product table
-def product():
+def product1():
     a = []
 
     MyStruct = namedtuple("MyStruct", "productname, price, description, imagedata, quantity,productowner")
-    b=generatinformation()
+    b=generatinformation1()
 
     for i in range(8,100):
         c=fake.product()
@@ -299,26 +298,26 @@ def product():
 
 ##############################################################
 #create table ConfigAttribute
-def ConfigAttribute():
+def ConfigAttribute1():
     a = []
 
     MyStruct = namedtuple("MyStruct", "name description, unit, attributerowner")
-    b=product()
+    b=product1()
 
-    for i in range(8,100):
+    for i in range(len(b)):
 
         MyStruct = (categories1(b[i][0]),productdescription(b[i][0]),productunit(b[i][0]),b[i][5])
         a.append(MyStruct)
     return a
 ##############################################################
 #create "productattribution" table
-def productattribution():
+def productattribution1():
     a=[]
 
 
     MyStruct = namedtuple("MyStruct", " attributionname, productname,productowner, value ")
 
-    k=product()
+    k=product1()
     for i in range(len(k)):
         MyStruct=(categories1(k[i][0]),k[i][0],k[i][5],productvalue(k[i][0]))
         a.append(MyStruct)
@@ -326,35 +325,35 @@ def productattribution():
 ################################################################
 
 #create Warehouse table
-def Warehouse():
+def Warehouse1():
     a=[]
     MyStruct = namedtuple("MyStruct", " UserName, description, capacity,addressID ")
 
-    c =generatinformation()
-    d=productattribution()
+    c =generatinformation1()
+    d=productattribution1()
     k=fake.allregion()
     for i in range(len(k)):
         MyStruct = (c[i+3][3],k[i],random.randint(10000,100000),random.randint(0,99) )
         a.append(MyStruct)
     return a
 ################################################################################################
-def Warehousestorage():
+def Warehousestorage1():
     a=[]
     MyStruct = namedtuple("MyStruct", "  refilldate, price, ProductName,productowner ")
-    k=product()
+    k=product1()
 
-    for i in range(8,100):
+    for i in range(len(k)):
 
         MyStruct = (g.randomDate(),productvalue(k[i][0]),k[i][0],k[i][5] )
         a.append(MyStruct)
     return a
 #####################################################################################################
 #create table categories
-def categories():
+def categories2():
     a=[]
     MyStruct = namedtuple("MyStruct", " categoryname, isdefault, categoryDescription, categoryowner ")
-    q=generatinformation()
-    f=product()
+    q=generatinformation1()
+    f=product1()
     s='t f'
     k=s.split()
     for i in range(8,100):
@@ -365,10 +364,10 @@ def categories():
     return a
 ##########################################################################################################
 #table producttocategories
-def producttocategories():
+def producttocategories1():
     a=[]
     MyStruct = namedtuple("MyStruct", " categoryname, productname,productowner ")
-    c=product()
+    c=product1()
     for i in range(len(c)):
 
         MyStruct = (categories1(c[i][0]),c[i][0],c[i][5])
@@ -376,7 +375,7 @@ def producttocategories():
     return a
 #############################################################################################################
 #table permission
-def permission():
+def permission1():
     a=[]
     MyStruct = namedtuple("MyStruct", " accessType, accessdescription ")
     k=role()
@@ -387,7 +386,7 @@ def permission():
     return a
 #################################################################################################################
 #table Access
-def Access():
+def Access1():
     a=[]
     MyStruct = namedtuple("MyStruct", " rolename, accesstype,accesslevel ")
     k=role()
