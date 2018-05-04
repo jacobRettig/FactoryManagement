@@ -303,7 +303,9 @@ def createUser(role, emailp, passwordp, firstNamep, lastNamep, phoneNumberp, bir
         return False
 
 def createRegion(regionNamep, regionDescriptionp):
-    row = Region(regionNamep, regionDescriptionp)
+    print('regionName:{}, desc:{}'.format(type(regionNamep), type(regionDescriptionp)))
+    row = Region(regionName=regionNamep, regionDescription=regionDescriptionp)
+
     session.add(row)
 
     try:
@@ -314,7 +316,7 @@ def createRegion(regionNamep, regionDescriptionp):
         return False
 
 def createCountry(countryp, internationalCallPrefixp):
-    row = Country(countryp, internationalCallPrefixp)
+    row = Country(country=countryp, internationalCallPrefix=internationalCallPrefixp)
     session.add(row)
 
     try:
@@ -325,7 +327,7 @@ def createCountry(countryp, internationalCallPrefixp):
         return False
 
 def createRole(roleNamep, roleDescriptionp):
-    row = Role(roleNamep, roleDescriptionp)
+    row = Role(roleName=roleNamep, roleDescription=roleDescriptionp)
     session.add(row)
 
     try:
@@ -337,7 +339,7 @@ def createRole(roleNamep, roleDescriptionp):
 
 
 def createProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp):
-    row = Product(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp)
+    row = Product(productName=productNamep, price=pricep, imageData=imageDatap, quantity=quantityp, productOwner=productOwnerp, description=descriptionp)
     session.add(row)
 
     try:
@@ -348,7 +350,7 @@ def createProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, de
         return False
 
 def createConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
-    row = ConfigAttribute(namep, attributeOwnerp, descriptionp, unitp)
+    row = ConfigAttribute(name=namep, attributeOwner=attributeOwnerp, description=descriptionp, unit=unitp)
     session.add(row)
 
     try:
@@ -359,7 +361,7 @@ def createConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
         return False
     
 def createProductAttribute(namep, productNamep, productOwnerp, valuep):
-    row = ProductAttribute(namep, productNamep, productOwnerp, valuep)
+    row = ProductAttribute(name=namep, productName=productNamep, productOwner=productOwnerp, value=valuep)
     session.add(row)
 
     try:
@@ -399,7 +401,7 @@ def createCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwne
         isDefaultp = '1'
     else:
         isDefaultp = '0'
-    row = Category(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp) 
+    row = Category(categoryName=categoryNamep, isDefault=isDefaultp, categoryDescription=categoryDescriptionp, categoryOwner=categoryOwnerp) 
     session.add(row)
 
     try:
@@ -410,7 +412,7 @@ def createCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwne
         return False
 
 def createProductCategory(categoryNamep, productNamep, productOwnerp):
-    row = ProductCategory(categoryNamep, productNamep, productOwnerp) 
+    row = ProductCategory(categoryName=categoryNamep, productName=productNamep, productOwner=productOwnerp) 
     session.add(row)
 
     try:
@@ -421,7 +423,7 @@ def createProductCategory(categoryNamep, productNamep, productOwnerp):
         return False
 
 def createPermission(accessTypep, accessDescriptionp):
-    row = Permission(accessTypep, accessDescriptionp) 
+    row = Permission(accessType=accessTypep, accessDescription=accessDescriptionp) 
     session.add(row)
 
     try:
@@ -433,7 +435,7 @@ def createPermission(accessTypep, accessDescriptionp):
 
 #accessLevel will be one of ('read', 'write', 'both', 'none')
 def createAccess(roleNamep, accessTypep, accessLevelp):
-    row = Access(roleNamep, accessTypep, accessLevelp) 
+    row = Access(roleName=roleNamep, accessType=accessTypep, accessLevel=accessLevelp) 
     session.add(row)
 
     try:
