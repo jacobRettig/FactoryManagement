@@ -41,7 +41,7 @@ class Region(Base):
 class Country(Base):
     __tablename__ = 'Country'
     country = Column('country', String(50), primary_key=True)
-    internationalCallPrefix = Column('internationalCallPrefix', String(5)) #NOT NULL CHECK (internationalCallPrefix NOT LIKE “%[^0-9]%”),
+    internationalCallPrefix = Column('internationalCallPrefix', String(5)) 
 
 class Address(Base):
     __tablename__ = 'Address'
@@ -71,17 +71,18 @@ class Product(Base):
     __tablename__ = 'Products'
     productName = Column('productName', String(30), primary_key=True)
     price = Column('price', Numeric, nullable=False)
-    description = Column('description', String(100))
     imageData = Column('imageData', String(300), nullable=False)
     quantity = Column('quantity', Integer, nullable=False)
-    productOwner = Column('productOwner', String(50), ForeignKey("LogInformation.email"), primary_key=True)    
+    productOwner = Column('productOwner', String(50), ForeignKey("LogInformation.email"), primary_key=True) 
+    description = Column('description', String(100))  
 
 class ConfigAttribute(Base):
     __tablename__ = 'ConfigAttribute'
     name = Column('name', String(20), primary_key=True)
+    attributeOwner = Column('attributeOwner', String(50), ForeignKey("LogInformation.email"), primary_key=True)
     description = Column('description', String(100))
     unit = Column('unit', String(10))
-    attributeOwner = Column('attributeOwner', String(50), ForeignKey("LogInformation.email"), primary_key=True)
+    
 
 class ProductAttribute(Base):
     __tablename__ = 'ProductAttribute'
@@ -133,37 +134,41 @@ class Access(Base):
 
 
 #checks if email/password combination is valid (returns True/False)
-def isValidLogin(email, password):
+def isValidLogin(emailp, passwordp):
 
     try:
-        row = session.query(LogInformation).get(email)
-        return row.password == password
+        row = session.query(LogInformation).get(emailp)
+        return row.password == passwordp
     except exc.SQLAlchemyError as e:
         print("isValidLogin failed with: ", e)
 
-#NOT WORKING
 #checks if email exists (returns True/False)
-def emailExists(email):
+def emailExists(emailp):
     try:
-        return session.query(LogInformation).filter(LogInformation.email.in_(email)) #emails needs to be in list? 
+        row = session.query(LogInformation).filter(LogInformation.email==emailp).one() 
+        return True 
     except exc.SQLAlchemyError as e:
         print("emailExists failed with: ", e)
-        
+        return False
 
 
 
 #GETTERS (attempts to get data from specified table and throws meaningful error on failure)
 
 #gets address specific to user
-def getAddressID(email):
-    pass
+def getAddressID(emailp):
+    try:
+        row = session.query(LogInformation).get(emailp)
+        return row.addressID
+    except exc.SQLAlchemyError as e:
+        print("getAddressID failed with: ", e)
 
 #gets role from email
-def getRole(email):
+def getRole(emailp):
     
     #get the role name by joining the LogInformation and Role tables and filtering by email, hopefully won't return more than one row
     try:
-        row = session.query(Role).join(LogInformation, Role.roleName==LogInformation.roleName).filter(LogInformation.email == email).one()
+        row = session.query(Role).join(LogInformation, Role.roleName==LogInformation.roleName).filter(LogInformation.email == emailp).one()
         return row.roleName
     except exc.SQLAlchemyError as e:
         print("getRole failed with: ", e)
@@ -173,204 +178,119 @@ def getRegions():
     
     try:
         rows = session.query(Region).all()
-        return rows.regionName #will this return a list?
+        return rows.regionName 
     except exc.SQLAlchemyError as e:
         print("getRegions failed with: ", e)
 
 #gets a list of products for the specified warehouse owner
-def getWarehouseProducts(warehouseManager):
+def getWarehouseProducts(warehouseManagerp):
 
     try:
-        rows = session.query(WarehouseStorage).join(Warehouse, WarehouseStorage.warehouseID==Warehouse.warehouseID).filter(Warehouse.warehouseOwner == warehouseManager).all()
+        rows = session.query(WarehouseStorage).join(Warehouse, WarehouseStorage.warehouseID==Warehouse.warehouseID).filter(Warehouse.warehouseOwner == warehouseManagerp).all()
         return rows.productName
     except exc.SQLAlchemyError as e:
         print("getWarehouseProducts failed with", e)
 
 
-#returns complete list of accessType
+#returns complete list of accessType returns ('read', 'write', 'both', 'none')
 def getAccessTypes():
-    pass
+    try:
+        rows = session.query(Access).all()
+        return rows.accessType
+    except exc.SQLAlchemyError as e:
+        print("getAccessTypes failed with: ", e)
 
 #returns description of specified accessType and returns None on NULL description but throws error on failure
-def getAccessDescription(accessType):
-    pass
+def getAccessDescription(accessTypep):
+    try:
+        row = session.query(Access).get(accessTypep)
+        return row.accessDescription
+    except exc.SQLAlchemyError as e:
+        print("getAccessDescription failed with: ", e)
+
 
 #returns access level for specified role and access type
-def getAccessLevel(roleName, accessType):
-    pass
+def getAccessLevel(roleNamep, accessTypep):
+    try:
+        row = session.query(Access).filter(Access.roleName==roleNamep).filter(Access.accessType==accessTypep).all() 
+        return row.accessLevel
+    except exc.SQLAlchemyError as e:
+        print("getAccessLevel failed with: ", e)
 
 #gets a list containing all the countries in the DB
 def getCountries():
-    pass
+    try:
+        rows = session.query(Address).all()
+        return rows.country
+    except exc.SQLAlchemyError as e:
+        print("getCountries failed with: ", e)
+
 
 #returns list of named tuples belonging to specified user
-def getProducts(email):
-    pass
+def getProducts(emailp):
+    try:
+        return session.query(Products).filter(Products.productOwner==emailp).all()
+    except exc.SQLAlchemyError as e:
+        print("getProducts failed with: ", e)
+
 
 #returns list of named tuples belonging to specified user (ignoring default)
-def getCategories(email):
-    pass
+def getCategories(emailp):
+    try:
+        return session.query(Category).filter(Category.categoryOwner==emailp).all()
+    except exc.SQLAlchemyError as e:
+        print("getCategories failed with: ", e)
 
 #if email is none just returns default categories but if email is given it also includes non-default
 #categories specific to that user
-def getCategoriesGlobal(email=None):
-    pass
+def getCategoriesGlobal(emailp=None):
+	
+	if(emailp==None):
+		try:
+        	return session.query(Category).filter(Category.isDefault=='1').all()
+    	except exc.SQLAlchemyError as e:
+        	print("getCategoriesGlobal failed with: ", e)
+    else:
+    	try:
+        	return session.query(Category).filter(or_(Category.isDefault=='1', Category.categoryOwner==emailp)).all()
+    	except exc.SQLAlchemyError as e:
+        	print("getCategoriesGlobal failed with: ", e)
 
+    
 #tries to return warehouse associated with user
-def getWarehouse(email):
-    pass
+def getWarehouse(emailp):
+    try:
+        return session.query(Warehouse).filter(Warehouse.warehouseOwner==emailp).all()
+    except exc.SQLAlchemyError as e:
+        print("getWarehouse failed with: ", e)
 
 #returns list of named tuples belonging to specified user
-def getConfigAttributes(email):
-    pass
+def getConfigAttributes(emailp):
+    try:
+        return session.query(ConfigAttribute).filter(ConfigAttribute.attributeOwner==emailp).all()
+    except exc.SQLAlchemyError as e:
+        print("getConfigAttributes failed with: ", e)
 
 #returns list of named tuples belonging to specified user and product
-def getProductAttribute(email, productName):
-    pass
-
-#returns a list of named tuples belonging to specific user and product
-def getProductCategories(email, productName):
-    pass
-
+def getProductAttribute(emailp, productNamep):
+    try:
+        return session.query(ProductAttribute).filter(ProductAttribute.productName==productNamep).filter(ProductAttribute.productOwner==emailp).all() 
+    except exc.SQLAlchemyError as e:
+        print("getProductAttribute failed with: ", e)
 
 
 
 #CREATION SETTERS (attempts to populate specified table and returns True on success, False on failure)
-def createRegion(regionName, regionDescription):
-    pass
 
-def createCountry(country, internationalCallPrefix):
-    pass
-
-def createRole(roleName, roleDescription):
-    pass
-
-def createProduct(productName, price, imageData, quantity, productOwner, description):
-    pass
-
-def createConfigAttribute(name, attributeOwner, description, unit):
-    pass
-
-def createProductAttribute(name, productName, productOwner, value):
-    pass
-
-def createWarehouse(warehouseOwner, description, capacity, addressID):
-    pass
-
-def createWarehouseStorage(refillDate, price, productName, productOwner):
-    pass
-
-#isDefault will be a bool
-def createCategory(categoryName, isDefault, categoryDescription, categoryOwner):
-    pass
-
-def createProductCategory(categoryName, productName, productOwner):
-    pass
-
-def createPermission(accessType, accessDescription):
-    pass
-
-#accessLevel will be one of ('read', 'write', 'both', 'none')
-def createAccess(roleName, accessType, accessLevel):
-    pass
-
-
-
-#MODIFICATION SETTERS (attempts to modify specified table and tuple and returns True on success, False on failure)
-#uses primary key as identifier (cannot directly modify)
-
-def modifyRegion(regionName, regionDescription):
-    pass
-
-def modifyCountry(country, internationalCallPrefix):
-    pass
-
-def modifyRole(roleName, roleDescription):
-    pass
-
-def modifyProduct(productName, price, imageData, quantity, productOwner, description):
-    pass
-
-def modifyConfigAttribute(name, attributeOwner, description, unit):
-    pass
-
-def modifyProductAttribute(name, productName, productOwner, value):
-    pass
-
-def modifyWarehouse(warehouseOwner, description, capacity, addressID):
-    pass
-
-def modifyWarehouseStorage(refillDate, price, productName, productOwner):
-    pass
-
-#isDefault will be a bool
-def modifyCategory(categoryName, isDefault, categoryDescription, categoryOwner):
-    pass
-
-def modifyProductCategory(categoryName, productName, productOwner):
-    pass
-
-def modifyPermission(accessType, accessDescription):
-    pass
-
-#accessLevel will be one of ('read', 'write', 'both', 'none')
-def modifyAccess(roleName, accessType, accessLevel):
-    pass
-
-
-
-
-#DELETERS
-
-def deleteRegion(regionName):
-    pass
-
-def deleteCountry(country):
-    pass
-
-def deleteRole(roleName):
-    pass
-
-def deleteProduct(productName):
-    pass
-
-def deleteConfigAttribute(name, attributeOwner):
-    pass
-
-def deleteProductAttribute(name, productName, productOwner):
-    pass
-
-def deleteWarehouse(warehouseID):
-    pass
-
-def deleteWarehouseStorage(warehouseID, productName, productOwner):
-    pass
-
-def deleteCategory(categoryName, categoryOwner):
-    pass
-
-def deleteProductCategory(categoryName, productName, productOwner):
-    pass
-
-def deletePermission(accessType):
-    pass
-
-def deleteAccess(roleName):
-    pass
-
-
-
-
-#creates a new user if possible and returns True on success, False on failure
 #if no second line of address then it will be None
-def createUser(role, email, password, firstName, lastName, phoneNumber, birthdate, country, region, addressFirstLine, addressSecondLine):
+def createUser(role, emailp, passwordp, firstNamep, lastNamep, phoneNumberp, birthdatep, countryp, region, addressFirstLine, addressSecondLine):
     
     #create address row
-    address = Address(addressLineFirst=addressFirstLine, addressLineSecond=addressSecondLine, country=country, regionName=region)
+    address = Address(addressLineFirst=addressFirstLine, addressLineSecond=addressSecondLine, country=countryp, regionName=region)
     session.add(address)
 
     #create user row, not sure if using address variable will work for address_id
-    user = LogInformation(birthdate=birthdate, password=password, phoneNumber=phoneNumber, email=email, firstName=firstName, lastName=lastName, addressID=address)
+    user = LogInformation(birthdate=birthdatep, password=passwordp, phoneNumber=phoneNumberp, email=emailp, firstName=firstNamep, lastName=lastNamep, addressID=address, roleName=role)
     session.add(user)
 
     #try to commit changes to database, if it fails return False - might need to do more with exception
@@ -380,6 +300,361 @@ def createUser(role, email, password, firstName, lastName, phoneNumber, birthdat
     except exc.SQLAlchemyError as e:
         print("createUser failed with: ", e)
         return False
+
+def createRegion(regionNamep, regionDescriptionp):
+    row = Region(regionNamep, regionDescriptionp)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createRegion failed with: ", e)
+        return False
+
+def createCountry(countryp, internationalCallPrefixp):
+    row = Country(countryp, internationalCallPrefixp)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createCountry failed with: ", e)
+        return False
+
+def createRole(roleNamep, roleDescriptionp):
+    row = Role(roleNamep, roleDescriptionp)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createRole failed with: ", e)
+        return False
+
+
+def createProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp):
+    row = Product(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createProduct failed with: ", e)
+        return False
+
+def createConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
+	row = ConfigAttribute(namep, attributeOwnerp, descriptionp, unitp)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createConfigAttribute failed with: ", e)
+        return False
+    
+def createProductAttribute(namep, productNamep, productOwnerp, valuep):
+    row = ProductAttribute(namep, productNamep, productOwnerp, valuep)
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createProductAttribute failed with: ", e)
+        return False
+
+def createWarehouse(warehouseOwnerp, descriptionp, capacityp, addressIDp):
+	#not sure if this will auto incr primary key
+    row = Warehouse(warehouseOwner=warehouseOwnerp, description=descriptionp, capacity=capacityp, addressID=addressIDp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createWarehouse failed with: ", e)
+        return False
+
+def createWarehouseStorage(refillDatep, pricep, productNamep, productOwnerp):
+    #not sure if this will auto incr primary key
+    row = WarehouseStorage(refillDate=refillDatep, price=pricep, productName=productNamep, productOwner=productOwnerp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createWarehouseStorage failed with: ", e)
+        return False
+
+#isDefault will be a bool
+def createCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp):
+	if(isDefaultp):
+		isDefaultp = '1'
+	else:
+		isDefaultp = '0'
+    row = Category(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createCategory failed with: ", e)
+        return False
+
+def createProductCategory(categoryNamep, productNamep, productOwnerp):
+    row = ProductCategory(categoryNamep, productNamep, productOwnerp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createProductCategory failed with: ", e)
+        return False
+
+def createPermission(accessTypep, accessDescriptionp):
+    row = Permission(accessTypep, accessDescriptionp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createPermission failed with: ", e)
+        return False
+
+#accessLevel will be one of ('read', 'write', 'both', 'none')
+def createAccess(roleNamep, accessTypep, accessLevelp):
+    row = Access(roleNamep, accessTypep, accessLevelp) 
+    session.add(row)
+
+    try:
+        session.commit()
+        return True
+    except exc.SQLAlchemyError as e:
+        print("createAccess failed with: ", e)
+        return False
+
+
+
+#MODIFICATION SETTERS (attempts to modify specified table and tuple and returns True on success, False on failure)
+#uses primary key as identifier (cannot directly modify)
+
+def modifyRegion(regionNamep, regionDescriptionp):
+    try:
+    	row = session.query(Region).get(regionNamep)
+    	row.regionDescription = regionDescriptionp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyRegion failed with: ", e)
+
+def modifyCountry(countryp, internationalCallPrefixp):
+    try:
+    	row = session.query(Country).get(countryp)
+    	row.internationalCallPrefix = internationalCallPrefixp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyCountry failed with: ", e)
+
+def modifyRole(roleNamep, roleDescriptionp):
+    try:
+    	row = session.query(Role).get(roleNamep)
+    	row.rowDescription = roleDescriptionp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyRole failed with: ", e)
+
+
+def modifyProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp):
+    try:
+    	row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	row.price = pricep
+    	row.imageData = imageDatap
+    	row.quantity = quantityp
+    	row.description = descriptionp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyProduct failed with: ", e)
+
+def modifyConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
+    try:
+    	row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
+    	row.description = descriptionp
+    	row.unit = unitp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyConfigAttribute failed with: ", e)
+
+
+def modifyProductAttribute(namep, productNamep, productOwnerp, valuep):
+    try:
+    	row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	row.value = valuep
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyProductAttribute failed with: ", e)
+
+def modifyWarehouse(warehouseIDp, warehouseOwnerp, descriptionp, capacityp, addressIDp):
+    try:
+    	row = session.query(Warehouse).get(warehouseIDp)
+    	row.warehouseOwner = warehouseOwnerp
+    	row.description = descriptionp
+    	row.capacity = capacityp
+    	addressID = addressIDp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyWarehouse failed with: ", e)
+
+def modifyWarehouseStorage(warehouseIDp, refillDatep, pricep, productNamep, productOwnerp):
+    try:
+    	row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	row.refillDate = refillDatep
+    	row.price = pricep
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyWarehouseStorage failed with: ", e)
+
+#isDefault will be a bool
+def modifyCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp):
+    try:
+    	row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
+    	if(isDefaultp):
+    		row.isDefault = '1'
+    	else:
+    		row.isDefault = '0'
+    	row.categoryDescription = categoryDescriptionp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyCategory failed with: ", e)
+
+#all primary keys so don't need this function?
+#def modifyProductCategory(categoryName, productName, productOwner):
+    
+def modifyPermission(accessTypep, accessDescriptionp):
+    try:
+    	row = session.query(Permission).get(accessTypep)
+    	row.accessDescription = accessDescriptionp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyPermission failed with: ", e)
+
+#accessLevel will be one of ('read', 'write', 'both', 'none')
+def modifyAccess(roleNamep, accessTypep, accessLevelp):
+    try:
+    	row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
+    	row.accessLevel = accessLevelp
+    	session.commit() 
+    except exc.SQLAlchemyError as e:
+        print("modifyAccess failed with: ", e)
+
+
+
+
+#DELETERS
+
+def deleteRegion(regionNamep):
+	try:
+    	row = session.query(Region).get(regionNamep)
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteRegion failed with: ", e)
+
+def deleteCountry(countryp):
+    try:
+    	row = session.query(Country).get(countryp)
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteCountry failed with: ", e)
+
+def deleteRole(roleNamep):
+    try:
+    	row = session.query(Role).get(roleNamep)
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteRole failed with: ", e)
+
+def deleteProduct(productNamep, emailp):
+    try:
+    	row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteProduct failed with: ", e)
+
+def deleteConfigAttribute(namep, attributeOwnerp):
+    try:
+    	row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteConfigAttribute failed with: ", e)
+
+def deleteProductAttribute(namep, productNamep, productOwnerp):
+    try:
+    	row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteProductAttribute failed with: ", e)
+
+def deleteWarehouse(warehouseIDp):
+    try:
+    	row = session.query(Warehouse).get(warehouseIDp)
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteWarehouse failed with: ", e)
+
+def deleteWarehouseStorage(warehouseIDp, productNamep, productOwnerp):
+    try:
+    	row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteWarehouseStorage failed with: ", e)
+
+def deleteCategory(categoryNamep, categoryOwnerp):
+    try:
+    	row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteCategory failed with: ", e)
+
+def deleteProductCategory(categoryNamep, productNamep, productOwnerp):
+    try:
+    	row = session.query(ProductCategory).filter(categoryName=categoryNamep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteProductCategory failed with: ", e)
+
+
+def deletePermission(accessTypep):
+    try:
+    	row = session.query(Permission).get(accessTypep)
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deletePermission failed with: ", e)
+
+def deleteAccess(roleNamep, accessTypep):
+    try:
+    	row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
+    	session.delete(row)
+    	session.commit()
+    except exc.SQLAlchemyError as e:
+        print("deleteAccess failed with: ", e)
 
 
 
