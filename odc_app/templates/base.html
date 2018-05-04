@@ -33,6 +33,7 @@
                     <!-- Path of the products route goes in the href below -->
                     {% if not current_user.is_anonymous %}
                     	<li><a href="/products">Products</a></li>
+                        <li><a href="/products/delete">Delete Products</a></li>
                     	<!-- Below line is supposed to only show the New Product route if the user isn't a warehouse manager, not sure if it works -->
                     	{% if DB.getRole(user) != "Warehouse Manager" %}
                     		<li><a href="/products/new">New Product</a></li>
