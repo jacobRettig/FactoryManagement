@@ -25,7 +25,7 @@ from sqlalchemy import exc
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import sessionmaker
 
-engine = create_engine('sqlite:///FactoryManagement.db')
+engine = create_engine('sqlite:///FactoryManagement.db', echo=True)
 Base = declarative_base()
 Session = sessionmaker()
 Session.configure(bind=engine)
@@ -37,6 +37,7 @@ class Region(Base):
     __tablename__ = 'Region'
     regionName = Column('regionName', String(30), primary_key=True)
     regionDescription = Column('regionDescription', String(50))
+Base.metadata.create_all(engine)
 
 class Country(Base):
     __tablename__ = 'Country'
@@ -284,7 +285,7 @@ def getProductAttribute(emailp, productNamep):
 
 #if no second line of address then it will be None
 def createUser(role, emailp, passwordp, firstNamep, lastNamep, phoneNumberp, birthdatep, countryp, region, addressFirstLine, addressSecondLine):
-    
+    print('role:{}, email:{}, password:{}, firstName:{}, lastName:{}, phoneNumber:{}, birthdate:{}, country:{}, region:{}, addressFirstLine:{}, addressSecondLine:{}'.format(role, emailp, passwordp, firstNamep, lastNamep, phoneNumberp, birthdatep, countryp, region, addressFirstLine, addressSecondLine))
     #create address row
     address = Address(addressLineFirst=addressFirstLine, addressLineSecond=addressSecondLine, country=countryp, regionName=region)
     session.add(address)
@@ -674,6 +675,12 @@ def defaultdata():
     producttocategoriestable = producttocategories()
     permissiontable = permission()
     Accesstable = Access()
+    for i in range(len(regiontable)):
+        createRegion(regiontable[i][0], regiontable[i][1])
+    for i in range(len(countrytable)):
+        createCountry(countrytable[i][0], countrytable[i][1])
+
+
     for i in range(len(generatinformationtable)):
         createUser(generatinformationtable[i][6], generatinformationtable[i][3], generatinformationtable[i][1],
                    generatinformationtable[i][4], generatinformationtable[i][5]
@@ -686,8 +693,6 @@ def defaultdata():
     for i in range(len(ConfigAttributetable)):
         createConfigAttribute(ConfigAttributetable[i][0], ConfigAttributetable[i][3], ConfigAttributetable[i][1],
                               ConfigAttributetable[i][2])
-    for i in range(len(countrytable)):
-        createCountry(countrytable[i][0], countrytable[i][1])
     for i in range(len(permissiontable)):
         createPermission(permissiontable[i][0], permissiontable[i][1])
     for i in range(len(roletable1)):
@@ -706,10 +711,7 @@ def defaultdata():
     for i in range(len(producttable)):
         createProduct(producttable[i][0], producttable[i][1], producttable[i][3], producttable[i][4],
                       producttable[i][5], producttable[i][2])
-    for i in range(len(regiontable)):
-        createRegion(regiontable[i][0], regiontable[i][1])
-
-
+    
 # run just the database in command line mode to create content directly
 if __name__ == '__main__':
     defaultdata()
