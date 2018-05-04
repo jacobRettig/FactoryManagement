@@ -1,7 +1,21 @@
 # -*- coding: utf-8 -*-
 # Primary Author: James Shelley
 # Database models go here
-
+import uu
+from uu import region
+from uu import country
+from uu import address
+from uu import roletable
+from uu import generatinformation
+from uu import product
+from uu import ConfigAttribute
+from uu import productattribution
+from uu import Warehouse
+from uu import Warehousestorage
+from uu import categories
+from uu import producttocategories
+from uu import permission
+from uu import Access
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -370,6 +384,57 @@ def createUser(role, email, password, firstName, lastName, phoneNumber, birthdat
 
 
 
-#run just the database in command line mode to create content directly
+def defaultdata():
+    regiontable = region()
+    countrytable = country()
+    addresstable = address()
+    roletable1 = roletable()
+    generatinformationtable = generatinformation()
+    producttable = product()
+    ConfigAttributetable = ConfigAttribute()
+    productattributiontable = productattribution()
+    Warehousetable = Warehouse()
+    WarehouseStoragetable = WarehouseStorage()
+    categoriestable = categories()
+    producttocategoriestable = producttocategories()
+    permissiontable = permission()
+    Accesstable = Access()
+    for i in range(len(generatinformationtable)):
+        createUser(generatinformationtable[i][6], generatinformationtable[i][3], generatinformationtable[i][1],
+                   generatinformationtable[i][4], generatinformationtable[i][5]
+                   , generatinformationtable[i][2], generatinformationtable[i][0], generatinformationtable[i][3],
+                   addresstable[i][4], addresstable[i][1], addresstable[i][2])
+    for i in range(len(Accesstable)):
+        createAccess(Accesstable[i][0], Accesstable[i][1], Accesstable[i][2])
+    for i in range(len(categoriestable)):
+        createCategory(categoriestable[i][0], categoriestable[i][1], categoriestable[i][2], categoriestable[i][3])
+    for i in range(len(ConfigAttributetable)):
+        createConfigAttribute(ConfigAttributetable[i][0], ConfigAttributetable[i][3], ConfigAttributetable[i][1],
+                              ConfigAttributetable[i][2])
+    for i in range(len(countrytable)):
+        createCountry(countrytable[i][0], countrytable[i][1])
+    for i in range(len(permissiontable)):
+        createPermission(permissiontable[i][0], permissiontable[i][1])
+    for i in range(len(roletable1)):
+        createRole(roletable1[i][0], roletable1[i][1])
+    for i in range(len(productattributiontable)):
+        createRegion(productattributiontable[i][0], productattributiontable[i][1], productattributiontable[i][2],
+                     productattributiontable[i][3])
+    for i in range(len(Warehousetable)):
+        createWarehouse(Warehousetable[i][0], Warehousetable[i][1], Warehousetable[i][2], Warehousetable[i][3])
+    for i in range(len(WarehouseStoragetable)):
+        createWarehouseStorage(WarehouseStoragetable[1][0], WarehouseStoragetable[1][1], WarehouseStoragetable[1][2],
+                               WarehouseStoragetable[1][3])
+    for i in range(len(producttocategoriestable)):
+        createProductCategory(producttocategoriestable[i][0], producttocategoriestable[i][1],
+                              producttocategoriestable[i][2])
+    for i in range(len(producttable)):
+        createProduct(producttable[i][0], producttable[i][1], producttable[i][3], producttable[i][4],
+                      producttable[i][5], producttable[i][2])
+    for i in range(len(regiontable)):
+        createRegion(regiontable[i][0], regiontable[i][1])
+
+
+# run just the database in command line mode to create content directly
 if __name__ == '__main__':
-    pass
+    defaultdata()
