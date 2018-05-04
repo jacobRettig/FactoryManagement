@@ -3,19 +3,19 @@
 # Database models go here
 import uu
 from uu import region1
-from uu import country
-from uu import address
-from uu import roletable
-from uu import generatinformation
-from uu import product
-from uu import ConfigAttribute
-from uu import productattribution
-from uu import Warehouse
-from uu import Warehousestorage
-from uu import categories
-from uu import producttocategories
-from uu import permission
-from uu import Access
+from uu import country1
+from uu import address1
+from uu import roletable1
+from uu import generatinformation1
+from uu import product1
+from uu import ConfigAttribute1
+from uu import productattribution1
+from uu import Warehouse1
+from uu import Warehousestorage1
+from uu import categories2
+from uu import producttocategories1
+from uu import permission1
+from uu import Access1
 import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
@@ -662,25 +662,25 @@ def deleteAccess(roleNamep, accessTypep):
 
 def defaultdata():
     regiontable = region1()
-    countrytable = country()
-    addresstable = address()
-    roletable1 = roletable()
-    generatinformationtable = generatinformation()
-    producttable = product()
-    ConfigAttributetable = ConfigAttribute()
-    productattributiontable = productattribution()
-    Warehousetable = Warehouse()
-    WarehouseStoragetable = WarehouseStorage()
-    categoriestable = categories()
-    producttocategoriestable = producttocategories()
-    permissiontable = permission()
-    Accesstable = Access()
+    countrytable = country1()
+    addresstable = address1()
+    roletable2 = roletable1()
+    generatinformationtable = generatinformation1()
+    producttable = product1()
+    ConfigAttributetable = ConfigAttribute1()
+    productattributiontable = productattribution1()
+    Warehousetable = Warehouse1()
+    WarehouseStoragetable = Warehousestorage1()
+    categoriestable = categories2()
+    producttocategoriestable = producttocategories1()
+    permissiontable = permission1()
+    Accesstable = Access1()
     for i in range(len(regiontable)):
         createRegion(regiontable[i][0], regiontable[i][1])
     for i in range(len(countrytable)):
         createCountry(countrytable[i][0], countrytable[i][1])
-    for i in range(len(roletable1)):
-        createRole(roletable1[i][0], roletable1[i][1])
+    for i in range(len(roletable2)):
+        createRole(roletable2[i][0], roletable2[i][1])
     for i in range(len(generatinformationtable)):
         createUser(generatinformationtable[i][7], generatinformationtable[i][3], generatinformationtable[i][1],
                    generatinformationtable[i][4], generatinformationtable[i][5]
