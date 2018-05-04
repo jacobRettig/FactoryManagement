@@ -244,17 +244,17 @@ def getCategories(emailp):
 #if email is none just returns default categories but if email is given it also includes non-default
 #categories specific to that user
 def getCategoriesGlobal(emailp=None):
-	
-	if(emailp==None):
-		try:
-        	return session.query(Category).filter(Category.isDefault=='1').all()
-    	except exc.SQLAlchemyError as e:
-        	print("getCategoriesGlobal failed with: ", e)
+    
+    if(emailp==None):
+        try:
+            return session.query(Category).filter(Category.isDefault=='1').all()
+        except exc.SQLAlchemyError as e:
+            print("getCategoriesGlobal failed with: ", e)
     else:
-    	try:
-        	return session.query(Category).filter(or_(Category.isDefault=='1', Category.categoryOwner==emailp)).all()
-    	except exc.SQLAlchemyError as e:
-        	print("getCategoriesGlobal failed with: ", e)
+        try:
+            return session.query(Category).filter(or_(Category.isDefault=='1', Category.categoryOwner==emailp)).all()
+        except exc.SQLAlchemyError as e:
+            print("getCategoriesGlobal failed with: ", e)
 
     
 #tries to return warehouse associated with user
@@ -347,7 +347,7 @@ def createProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, de
         return False
 
 def createConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
-	row = ConfigAttribute(namep, attributeOwnerp, descriptionp, unitp)
+    row = ConfigAttribute(namep, attributeOwnerp, descriptionp, unitp)
     session.add(row)
 
     try:
@@ -369,7 +369,7 @@ def createProductAttribute(namep, productNamep, productOwnerp, valuep):
         return False
 
 def createWarehouse(warehouseOwnerp, descriptionp, capacityp, addressIDp):
-	#not sure if this will auto incr primary key
+    #not sure if this will auto incr primary key
     row = Warehouse(warehouseOwner=warehouseOwnerp, description=descriptionp, capacity=capacityp, addressID=addressIDp) 
     session.add(row)
 
@@ -394,10 +394,10 @@ def createWarehouseStorage(refillDatep, pricep, productNamep, productOwnerp):
 
 #isDefault will be a bool
 def createCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp):
-	if(isDefaultp):
-		isDefaultp = '1'
-	else:
-		isDefaultp = '0'
+    if(isDefaultp):
+        isDefaultp = '1'
+    else:
+        isDefaultp = '0'
     row = Category(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp) 
     session.add(row)
 
@@ -449,88 +449,88 @@ def createAccess(roleNamep, accessTypep, accessLevelp):
 
 def modifyRegion(regionNamep, regionDescriptionp):
     try:
-    	row = session.query(Region).get(regionNamep)
-    	row.regionDescription = regionDescriptionp
-    	session.commit() 
+        row = session.query(Region).get(regionNamep)
+        row.regionDescription = regionDescriptionp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyRegion failed with: ", e)
 
 def modifyCountry(countryp, internationalCallPrefixp):
     try:
-    	row = session.query(Country).get(countryp)
-    	row.internationalCallPrefix = internationalCallPrefixp
-    	session.commit() 
+        row = session.query(Country).get(countryp)
+        row.internationalCallPrefix = internationalCallPrefixp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyCountry failed with: ", e)
 
 def modifyRole(roleNamep, roleDescriptionp):
     try:
-    	row = session.query(Role).get(roleNamep)
-    	row.rowDescription = roleDescriptionp
-    	session.commit() 
+        row = session.query(Role).get(roleNamep)
+        row.rowDescription = roleDescriptionp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyRole failed with: ", e)
 
 
 def modifyProduct(productNamep, pricep, imageDatap, quantityp, productOwnerp, descriptionp):
     try:
-    	row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	row.price = pricep
-    	row.imageData = imageDatap
-    	row.quantity = quantityp
-    	row.description = descriptionp
-    	session.commit() 
+        row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        row.price = pricep
+        row.imageData = imageDatap
+        row.quantity = quantityp
+        row.description = descriptionp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyProduct failed with: ", e)
 
 def modifyConfigAttribute(namep, attributeOwnerp, descriptionp, unitp):
     try:
-    	row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
-    	row.description = descriptionp
-    	row.unit = unitp
-    	session.commit() 
+        row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
+        row.description = descriptionp
+        row.unit = unitp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyConfigAttribute failed with: ", e)
 
 
 def modifyProductAttribute(namep, productNamep, productOwnerp, valuep):
     try:
-    	row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	row.value = valuep
-    	session.commit() 
+        row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        row.value = valuep
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyProductAttribute failed with: ", e)
 
 def modifyWarehouse(warehouseIDp, warehouseOwnerp, descriptionp, capacityp, addressIDp):
     try:
-    	row = session.query(Warehouse).get(warehouseIDp)
-    	row.warehouseOwner = warehouseOwnerp
-    	row.description = descriptionp
-    	row.capacity = capacityp
-    	addressID = addressIDp
-    	session.commit() 
+        row = session.query(Warehouse).get(warehouseIDp)
+        row.warehouseOwner = warehouseOwnerp
+        row.description = descriptionp
+        row.capacity = capacityp
+        addressID = addressIDp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyWarehouse failed with: ", e)
 
 def modifyWarehouseStorage(warehouseIDp, refillDatep, pricep, productNamep, productOwnerp):
     try:
-    	row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	row.refillDate = refillDatep
-    	row.price = pricep
-    	session.commit() 
+        row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        row.refillDate = refillDatep
+        row.price = pricep
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyWarehouseStorage failed with: ", e)
 
 #isDefault will be a bool
 def modifyCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwnerp):
     try:
-    	row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
-    	if(isDefaultp):
-    		row.isDefault = '1'
-    	else:
-    		row.isDefault = '0'
-    	row.categoryDescription = categoryDescriptionp
-    	session.commit() 
+        row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
+        if(isDefaultp):
+            row.isDefault = '1'
+        else:
+            row.isDefault = '0'
+        row.categoryDescription = categoryDescriptionp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyCategory failed with: ", e)
 
@@ -539,18 +539,18 @@ def modifyCategory(categoryNamep, isDefaultp, categoryDescriptionp, categoryOwne
     
 def modifyPermission(accessTypep, accessDescriptionp):
     try:
-    	row = session.query(Permission).get(accessTypep)
-    	row.accessDescription = accessDescriptionp
-    	session.commit() 
+        row = session.query(Permission).get(accessTypep)
+        row.accessDescription = accessDescriptionp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyPermission failed with: ", e)
 
 #accessLevel will be one of ('read', 'write', 'both', 'none')
 def modifyAccess(roleNamep, accessTypep, accessLevelp):
     try:
-    	row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
-    	row.accessLevel = accessLevelp
-    	session.commit() 
+        row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
+        row.accessLevel = accessLevelp
+        session.commit() 
     except exc.SQLAlchemyError as e:
         print("modifyAccess failed with: ", e)
 
@@ -560,99 +560,99 @@ def modifyAccess(roleNamep, accessTypep, accessLevelp):
 #DELETERS
 
 def deleteRegion(regionNamep):
-	try:
-    	row = session.query(Region).get(regionNamep)
-    	session.delete(row)
-    	session.commit()
+    try:
+        row = session.query(Region).get(regionNamep)
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteRegion failed with: ", e)
 
 def deleteCountry(countryp):
     try:
-    	row = session.query(Country).get(countryp)
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Country).get(countryp)
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteCountry failed with: ", e)
 
 def deleteRole(roleNamep):
     try:
-    	row = session.query(Role).get(roleNamep)
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Role).get(roleNamep)
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteRole failed with: ", e)
 
 def deleteProduct(productNamep, emailp):
     try:
-    	row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Product).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteProduct failed with: ", e)
 
 def deleteConfigAttribute(namep, attributeOwnerp):
     try:
-    	row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(ConfigAttribute).filter(name=namep).filter(attributeOwner=attributeOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteConfigAttribute failed with: ", e)
 
 def deleteProductAttribute(namep, productNamep, productOwnerp):
     try:
-    	row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(ProductAttribute).filter(name=namep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteProductAttribute failed with: ", e)
 
 def deleteWarehouse(warehouseIDp):
     try:
-    	row = session.query(Warehouse).get(warehouseIDp)
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Warehouse).get(warehouseIDp)
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteWarehouse failed with: ", e)
 
 def deleteWarehouseStorage(warehouseIDp, productNamep, productOwnerp):
     try:
-    	row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(WarehouseStorage).filter(warehouseID=warehouseIDp).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteWarehouseStorage failed with: ", e)
 
 def deleteCategory(categoryNamep, categoryOwnerp):
     try:
-    	row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Category).filter(categoryName=categoryNamep).filter(categoryOwner=categoryOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteCategory failed with: ", e)
 
 def deleteProductCategory(categoryNamep, productNamep, productOwnerp):
     try:
-    	row = session.query(ProductCategory).filter(categoryName=categoryNamep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(ProductCategory).filter(categoryName=categoryNamep).filter(productName=productNamep).filter(productOwner=productOwnerp).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteProductCategory failed with: ", e)
 
 
 def deletePermission(accessTypep):
     try:
-    	row = session.query(Permission).get(accessTypep)
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Permission).get(accessTypep)
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deletePermission failed with: ", e)
 
 def deleteAccess(roleNamep, accessTypep):
     try:
-    	row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
-    	session.delete(row)
-    	session.commit()
+        row = session.query(Access).filter(roleName=roleNamep).filter(accessType=accessTypep).one()
+        session.delete(row)
+        session.commit()
     except exc.SQLAlchemyError as e:
         print("deleteAccess failed with: ", e)
 
