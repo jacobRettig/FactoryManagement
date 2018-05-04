@@ -43,89 +43,89 @@ def role():
 def roledes(a):
     if a=='admin':
         return 'charger all'
-    if a=='warehousemanager':
+    elif a=='warehousemanager':
         return "charge the area"
-    if a=='user':
+    elif a=='user':
         return "take care product"
 #################################################
 def productdescription( a ):
     if a== 'book':
         return "a book"
-    if a== 'pen':
+    elif a== 'pen':
         return "a pen"
-    if a== 'pencil':
+    elif a== 'pencil':
         return "a pencil"
-    if a== 'desktop':
+    elif a== 'desktop':
         return "a desktop"
-    if a== 'laptop':
+    elif a== 'laptop':
         return "a laptop"
-    if a== 'orange':
+    elif a== 'orange':
         return "delicious orange"
-    if a== 'apple':
+    elif a== 'apple':
         return "yummy apple"
 ###############################################
 def productvalue(a):
     if a == 'book':
         return 123
-    if a == 'pen':
+    elif a == 'pen':
         return 5
-    if a == 'pencil':
+    elif a == 'pencil':
         return 5
-    if a == 'desktop':
+    elif a == 'desktop':
         return 2334
-    if a == 'laptop':
+    elif a == 'laptop':
         return 1223
-    if a == 'orange':
+    elif a == 'orange':
         return 5
-    if a == 'apple':
+    elif a == 'apple':
         return 12
 #####################################
 def imagedata(a):
     if a == 'book':
         return 'book'
-    if a == 'pen':
+    elif a == 'pen':
         return 'pen'
-    if a == 'pencil':
+    elif a == 'pencil':
         return 'pencil'
-    if a == 'desktop':
+    elif a == 'desktop':
         return 'desktop'
-    if a == 'laptop':
+    elif a == 'laptop':
         return 'laptop'
-    if a == 'orange':
+    elif a == 'orange':
         return 'orange'
-    if a == 'apple':
+    elif a == 'apple':
         return 'apple'
 #####################################################
 def productunit(a):
     if a == 'book':
         return 'per'
-    if a == 'pen':
+    elif a == 'pen':
         return 'per'
-    if a == 'pencil':
+    elif a == 'pencil':
         return 'per'
-    if a == 'desktop':
+    elif a == 'desktop':
         return 'per'
-    if a == 'laptop':
+    elif a == 'laptop':
         return 'per'
-    if a == 'orange':
+    elif a == 'orange':
         return 'lb'
-    if a == 'apple':
+    elif a == 'apple':
         return 'lb'
 #############################################
 def categories1(a):
     if a == 'book':
         return 'book'
-    if a == 'pen':
+    elif a == 'pen':
         return 'studystuff'
-    if a == 'pencil':
+    elif a == 'pencil':
         return 'studystuff'
-    if a == 'desktop':
+    elif a == 'desktop':
         return 'electric'
-    if a == 'laptop':
+    elif a == 'laptop':
         return 'electric'
-    if a == 'orange':
+    elif a == 'orange':
         return 'fruit'
-    if a == 'apple':
+    elif a == 'apple':
         return 'fruit'
 #####################################
 def status():
@@ -153,29 +153,41 @@ fake.add_provider(country)
 def prefix(a):
     if a=='China':
         return '018'
-    if a=='American':
+    elif a=='American':
         return '1'
-    if a=='Spanish':
+    elif a=='Spanish':
         return '2'
-    if a=='Swaziland':
+    elif a=='Swaziland':
         return '3'
-    if a== 'Canada':
+    elif a== 'Canada':
         return '4'
-    if a== 'Benin':
+    elif a== 'Benin':
         return '5'
-    if a=='Brazil':
+    elif a=='Brazil':
         return'6'
 ##################################
 def regiondes(a):
     if a=='Canada' or 'America':
         return 'north America'
-    if a=='Brazil':
+    elif a=='Brazil':
         return 'south America'
-    if a=="China":
+    elif a=="China":
         return 'Asian'
-    if a =='Benin':
+    elif a =='Benin':
         return 'Africa'
-    if a=="Swaziland" or 'Spanish':
+    elif a=="Swaziland" or 'Spanish':
+        return 'European'
+######################################
+def regiondes2(a):
+    if a == 'NorthAmerica':
+        return 'north America'
+    elif a == 'SouthAmerica':
+        return 'south America'
+    elif a == "Asian":
+        return 'Asian'
+    elif a == 'Africa':
+        return 'Africa'
+    elif a == 'European':
         return 'European'
 #####################################################
 def addresscount(a):
@@ -212,8 +224,8 @@ def region1():
     MyStruct = namedtuple("MyStruct", " RegionName, RegionDescription ")
 
     c = fake.allregion()
-    for i in range(0, len(c)-1):
-        MyStruct = (c[i], regiondes(c[i]) )
+    for i in range( len(c)):
+        MyStruct = (c[i], regiondes2(c[i]) )
 
     # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
         a.append(MyStruct)
