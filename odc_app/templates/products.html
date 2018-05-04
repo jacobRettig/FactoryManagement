@@ -2,5 +2,9 @@
 {% import 'bootstrap/wtf.html' as wtf %}
 
 {% block app_content %}
+	<div class="ui main text container segment">
+		<div class="ui huge header text-center">View Products</div>
+                {{ content }}
+	</div>
 	<!-- Once database is set up, pass in list of products returned from query and display them here -->
 {% endblock %}

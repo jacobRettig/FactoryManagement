@@ -3,7 +3,7 @@
 
 #imports
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DecimalField, SelectField, validators, SelectField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, TextAreaField, DecimalField, SelectField, validators, SelectField, SelectMultipleField, IntegerField
 from wtforms.validators import DataRequired, EqualTo, Email, ValidationError, Length
 from wtforms.fields.html5 import DateField
 import phonenumbers
@@ -49,21 +49,33 @@ class LoginForm(FlaskForm):
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Sign In')
 
-class CreateProductForm(FlaskForm):
-    product_name = StringField("Product Name", validators=[DataRequired()])
-    """ The below are just a few exmaple default categories, there will also be a separate form that allows for the user to create a category
-        The first thing in the tuple is the value of the category
-        The second thing in the tuple is the actual label in the HTML page.
-    """
-    product_category = SelectField("Product Category", choices=[('beauty', 'Beauty'), ('electronics', 'Electronics'), ('clothing', 'Clothing'), ('toys', 'Toys'), ('office', 'Office Products')])
-    product_desc = TextAreaField("Product Description", validators=[DataRequired()])
-    product_price = DecimalField("Product Price", validators=[DataRequired()])
-    product_image = StringField("Product Image Link", validators=[DataRequired()])
-    submit = SubmitField('Create Product')
+def getCreateProductForm(categories):
+    class CreateProductForm(FlaskForm):
+        product_name = StringField("Product Name", validators=[DataRequired()])
+        """ The below are just a few exmaple default categories, there will also be a separate form that allows for the user to create a category
+            The first thing in the tuple is the value of the category
+            The second thing in the tuple is the actual label in the HTML page.
+        """
+        product_category = SelectMultipleField("Product Category", choices=list(map(lambda x:(x, x), categories)))
+        product_desc = TextAreaField("Product Description")
+        product_price = DecimalField("Product Price", validators=[DataRequired()])
+        product_image = StringField("Product Image Link", validators=[DataRequired()])
+        product_quantity = IntegerField('Product Quantity', validators=[DataRequired()])
+        submit = SubmitField('Create Product')
+    return CreateProductForm()
 
-class CreateCategoryForm(FlaskForm):
-    category_name = StringField("Category Name", validators=[DataRequired()])
-    category_description = TextAreaField("Category Description", validators=[DataRequired()])
-    submit = SubmitField('Create Category')
-
+def getCreateCategoryForm(isAdmin):
+    if isAdmin:
+        class CreateCategoryForm(FlaskForm):
+            name = StringField("Category Name", validators=[DataRequired()])
+            description = TextAreaField("Category Description", validators=[DataRequired()])
+            is_default = BooleanField('Default Category')
+            submit = SubmitField('Create Category')
+        return CreateCategoryForm()
+    else:
+        class CreateCategoryForm(FlaskForm):
+            name = StringField("Category Name", validators=[DataRequired()])
+            description = TextAreaField("Category Description", validators=[DataRequired()])
+            submit = SubmitField('Create Category')
+        return CreateCategoryForm()
 

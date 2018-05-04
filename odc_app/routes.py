@@ -5,9 +5,9 @@ for the purposes of rendering the static pages for testing the desgin.
 
 
 from odc_app import app
-from odc_app.forms import LoginForm, getRegistrationForm, CreateProductForm, CreateCategoryForm
+from odc_app.forms import LoginForm, getRegistrationForm, getCreateProductForm, getCreateCategoryForm
 from flask import render_template, url_for, redirect, abort
-from flask_login import UserMixin, login_user, login_required, login_manager
+from flask_login import UserMixin, login_user, login_required, login_manager, current_user
 import odc_app.sqlHandler as DB
 
 
@@ -57,24 +57,26 @@ def logout():
 def register():
     form = getRegistrationForm(DB.getRegions(), DB.getCountries())
     if form.validate_on_submit():
-        if DB.createUser('Customer', form['Email'], form['Password'], form['First Name'], form['Last Name'], form['Phone'], form['Date of Birth'], form['Country'], form['Region'], form['1st Line Address'], form['2nd Line Address']):
+        if DB.createUser('Customer', form.email.data, form.password.data, form.first_name.data, form.last_name.data, form.phone.data, form.dob.data, form.country.data, form.region.data, form.addressFirstLine.data, form.addressSecondLine.data):
             login_user(User.createUser(form['Email'], form['Password']))
             return redirect(url_for('index'))
-    return render_template('register.html', title='Registeration', form=form)
+        flash('Failed to register...')
+    else:
+        return render_template('register.html', title='Registeration', form=form)
 
 
 @app.route('/products/new', methods=['GET', 'POST'])
 @login_required
 def create_product():
-    form = CreateProductForm()
-    """ form.product_category.choices must be equal to a list of tuples as seen in the choices attribute in the SelectField in forms.py.
-        This is so we can dynamically load any created categories by the current userfrom the database into 
-        the select field on the html page via a query.
-    """
+    user = current_user()
+    form = getCreateProductForm(DB.getCategories(user.email))
+    
     if form.validate_on_submit():
-        # Save new product to database
-        return redirect(url_for('products'))
-    return render_template('new_product.html', title='Create Product', form=form)
+        if createProduct(form.product_name.data, form.product_price.data, form.product_image.data, form.product_quantity.data, user.email, form.product_desc.data):
+            return redirect(url_for('products'))
+        flash('Failed to create product...')
+    else:
+        return render_template('new_product.html', title='Create Product', form=form)
 
 
 @app.route('/products', methods=['GET'])
@@ -83,17 +85,39 @@ def products():
     # Query the products of current user
     # Store returned tuples as list
     # Pass in list as argument to render_template so that the products can be displayed
-    return render_template('products.html')
+    user = current_user()
+    products = DB.getProducts(user.email)
+
+    strTemplate = '''<div>
+    <h3>{name}</h3>
+    <img src="{src}" />
+    <p><b>Price:</b> {price}</p>
+    <p><b>Quantity:</b> {quantity}</p>
+    <p><b>Description:</b> {desc}</p>
+    </div>\n'''
+    strResult = '<p>No products</p>' if len(products) == 0 else ''
+    for product in products:
+        desc = '[Missing Description]' if product.description is None else product.description
+        strResult += strTemplate.format(name=product.productName, src=product.imageData, price=product.price, quantity=product.quantity, desc=desc)
+    
+    return render_template('products.html', content=strResult)
 
 
 @app.route('/categories/new', methods=['GET', 'POST'])
 @login_required
 def create_category():
-    form = CreateCategoryForm()
+    user = current_user()
+    isDefault = DB.getAccessLevel(DB.getRole(user.email), 'Default Category') == 'both'
+    form = getCreateCategoryForm(isDefault)
     if form.validate_on_submit():
-        # Save new category to database
-        return redirect(url_for('products'))
-    return render_template('new_category.html', title='Create Category', form=form)
+        if isDefault:
+            isDefault = form.is_default.data
+        if DB.createCategory(form.name.data, isDefault, form.description.data, user.email):
+            return redirect(url_for('products'))
+        else:
+            flash('Failed to create category...')
+    else:
+        return render_template('new_category.html', title='Create Category', form=form)
 
 @app.errorhandler(401)
 def unauthorized_access(e):
@@ -102,4 +126,3 @@ def unauthorized_access(e):
 @app.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html', title='Page Not Found'), 404
-
