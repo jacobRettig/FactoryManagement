@@ -111,7 +111,7 @@ def productunit(a):
     if a == 'apple':
         return 'lb'
 #############################################
-def categories(a):
+def categories1(a):
     if a == 'book':
         return 'book'
     if a == 'pen':
@@ -176,14 +176,6 @@ def regiondes(a):
         return 'Africa'
     if a=="Swaziland" or 'Spanish':
         return 'European'
-######################################
-def access(a):
-    if a=='admin':
-        return "access all"
-    if a=='warehousemanager':
-        return "charge the area"
-    if a=='user':
-        return "take care product and account"
 #####################################################
 def addresscount(a):
     if len(a)>=35:
@@ -283,7 +275,7 @@ def generatinformation():
     for i in range(8,100):
         MyStruct = (
             g.birthday(18), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
-            'customer')
+            'User')
         a.append(MyStruct)
    # k=0
     #
@@ -298,7 +290,7 @@ def product():
     b=generatinformation()
 
     for i in range(8,100):
-        c=fake.prodcut()
+        c=fake.product()
         MyStruct = (c, productvalue(c), productdescription(c), imagedata(c), random.randint(1,1000),b[i][3])
         a.append(MyStruct)
     return a
@@ -313,7 +305,7 @@ def ConfigAttribute():
 
     for i in range(8,100):
 
-        MyStruct = (categories(b[i][0]),productdescription(b[i][0]),productunit(b[i][0]),b[i][5])
+        MyStruct = (categories1(b[i][0]),productdescription(b[i][0]),productunit(b[i][0]),b[i][5])
         a.append(MyStruct)
     return a
 ##############################################################
@@ -326,7 +318,7 @@ def productattribution():
 
     k=product()
     for i in range(len(k)):
-        MyStruct=(categories(k[i][0]),k[i][0],k[i][5],productvalue(k[i][0]))
+        MyStruct=(categories1(k[i][0]),k[i][0],k[i][5],productvalue(k[i][0]))
         a.append(MyStruct)
     return a
 ################################################################
@@ -366,7 +358,7 @@ def categories():
     for i in range(8,100):
         for j in range(len(f)):
             if q[i][3]==f[j][5]:
-                MyStruct = (categories(f[j][0]),random.choice(k),categories(f[j][0]),q[i][3] )
+                MyStruct = (categories1(f[j][0]),random.choice(k),categories1(f[j][0]),q[i][3] )
                 a.append(MyStruct)
     return a
 ##########################################################################################################
@@ -377,7 +369,7 @@ def producttocategories():
     c=product()
     for i in range(len(c)):
 
-        MyStruct = (categories(c[i][0]),c[i][0],c[i][5])
+        MyStruct = (categories1(c[i][0]),c[i][0],c[i][5])
         a.append(MyStruct)
     return a
 #############################################################################################################
@@ -401,10 +393,10 @@ def Access():
         if k[i]=='admin':
             MyStruct = (k[i],'all','b')
             a.append(MyStruct)
-        if k[i]=='warehousemanager':
+        elif k[i]=='warehousemanager':
             MyStruct = (k[i], 'selfregion', 'r')
             a.append(MyStruct)
-        if k[i]=='customer':
+        elif k[i]=='user':
             MyStruct = (k[i], 'uploadproduct', 'n')
             a.append(MyStruct)
     return a
