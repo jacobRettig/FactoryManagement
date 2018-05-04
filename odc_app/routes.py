@@ -5,10 +5,11 @@ for the purposes of rendering the static pages for testing the desgin.
 
 
 from odc_app import app
-from odc_app.forms import LoginForm, getRegistrationForm, getCreateProductForm, getCreateCategoryForm
+from odc_app.forms import LoginForm, getRegistrationForm, getCreateProductForm, getCreateCategoryForm, getDeleteProductForm
 from flask import render_template, url_for, redirect, abort
 from flask_login import UserMixin, login_user, login_required, login_manager, current_user
 import odc_app.sqlHandler as DB
+from functools import reduce
 
 
 #Login User model
@@ -73,6 +74,8 @@ def create_product():
     
     if form.validate_on_submit():
         if createProduct(form.product_name.data, form.product_price.data, form.product_image.data, form.product_quantity.data, user.email, form.product_desc.data):
+            for category in form.product_category.data:
+                createProductCategory(category, form.product_name.data, user.email)
             return redirect(url_for('products'))
         flash('Failed to create product...')
     else:
@@ -94,12 +97,15 @@ def products():
     <p><b>Price:</b> {price}</p>
     <p><b>Quantity:</b> {quantity}</p>
     <p><b>Description:</b> {desc}</p>
+    <p><b>Categories:</b> {categories}</p>
     </div>\n'''
     strResult = '<p>No products</p>' if len(products) == 0 else ''
     for product in products:
         desc = '[Missing Description]' if product.description is None else product.description
-        strResult += strTemplate.format(name=product.productName, src=product.imageData, price=product.price, quantity=product.quantity, desc=desc)
-    
+        categories = list(map(lambda x:x.categoryName, DB.getProductCategories(user.email, product.productName)))
+        categories = reduce(lambda x, y:'{}, {}'.format(x, y), categories) if len(categories) > 0 else ''
+        strResult += strTemplate.format(name=product.productName, src=product.imageData, price=product.price, quantity=product.quantity, desc=desc, categories=categories)
+        
     return render_template('products.html', content=strResult)
 
 
@@ -118,6 +124,20 @@ def create_category():
             flash('Failed to create category...')
     else:
         return render_template('new_category.html', title='Create Category', form=form)
+
+
+@app.route('/products/delete', methods=['GET', 'POST'])
+@login_required
+def delete_products():
+    user = current_user()
+    products = DB.getProducts(user.email)
+    form = getDeleteProductForm(list(map(lambda x:x.productName, products)))
+    if form.validate_on_submit():
+        for product in form.names.data:
+            DB.deleteProduct(product, user.email)
+        return redirect(url_for('products'))
+    return render_template('deleteProduct.html', title='Delete Products', form=form)
+
 
 @app.errorhandler(401)
 def unauthorized_access(e):

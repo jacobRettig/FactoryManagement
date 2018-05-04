@@ -189,7 +189,7 @@ def getAccessLevel(roleName, accessType):
 def getCountries():
     pass
 
-#if returns list of named tuples belonging to specified user
+#returns list of named tuples belonging to specified user
 def getProducts(email):
     pass
 
@@ -206,12 +206,16 @@ def getCategoriesGlobal(email=None):
 def getWarehouse(email):
     pass
 
-#if returns list of named tuples belonging to specified user
+#returns list of named tuples belonging to specified user
 def getConfigAttributes(email):
     pass
 
-#if returns list of named tuples belonging to specified user and product
+#returns list of named tuples belonging to specified user and product
 def getProductAttribute(email, productName):
+    pass
+
+#returns a list of named tuples belonging to specific user and product
+def getProductCategories(email, productName):
     pass
 
 

@@ -79,3 +79,8 @@ def getCreateCategoryForm(isAdmin):
             submit = SubmitField('Create Category')
         return CreateCategoryForm()
 
+def getDeleteProductForm(products):
+    class DeleteProductForm(FlaskForm):
+        names = SelectMultipleField("Product Name", choices=list(map(lambda x:(x, x), products)))
+        submit = SubmitField('Delete Products')
+    return DeleteProductForm()
