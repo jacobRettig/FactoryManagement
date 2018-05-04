@@ -396,16 +396,30 @@ if __name__ == '__main__':
     producttocategoriestable=producttocategories()
     permissiontable=permission()
     Accesstable=Access()
-    for i in range(len(regiontable)):
-        createUser(regiontable[i][6],regiontable[i][3],regiontable[i][1],regiontable[i][4],regiontable[i][5],regiontable[i][2],regiontable[i][0],addresstable[i][3],addresstable[i][4],addresstable[i][1],addresstable[i][2])
+    for i in range(len(generatinformationtable)):
+        createUser(generatinformationtable[i][6],generatinformationtable[i][3],generatinformationtable[i][1],generatinformationtable[i][4],generatinformationtable[i][5]
+                   ,generatinformationtable[i][2],generatinformationtable[i][0],generatinformationtable[i][3],addresstable[i][4],addresstable[i][1],addresstable[i][2])
+    for i in range(len(Accesstable)):
         createAccess(Accesstable[i][0],Accesstable[i][1],Accesstable[i][2])
+    for i in range(len(categoriestable)):
         createCategory(categoriestable[i][0],categoriestable[i][1],categoriestable[i][2],categoriestable[i][3])
+    for i in range(len(ConfigAttributetable)):
         createConfigAttribute(ConfigAttributetable[i][0],ConfigAttributetable[i][3],ConfigAttributetable[i][1],ConfigAttributetable[i][2])
+    for i in range(len(countrytable)):
         createCountry(countrytable[i][0],countrytable[i][1])
+    for i in range(len(permissiontable)):
         createPermission(permissiontable[i][0],permissiontable[i][1])
+    for i in range(len(roletable1)):
         createRole(roletable1[i][0],roletable1[i][1])
-        createRegion(regiontable[i][0],regiontable[i][1])
+    for i in range(len(productattributiontable)):
+        createRegion(productattributiontable[i][0],productattributiontable[i][1],productattributiontable[i][2],productattributiontable[i][3])
+    for i in range(len(Warehousetable)):
         createWarehouse(Warehousetable[i][0],Warehousetable[i][1],Warehousetable[i][2],Warehousetable[i][3])
+    for i in range(len(WarehouseStoragetable)):
         createWarehouseStorage(WarehouseStoragetable[1][0],WarehouseStoragetable[1][1],WarehouseStoragetable[1][2],WarehouseStoragetable[1][3])
+    for i in range(len(producttocategoriestable)):
         createProductCategory(producttocategoriestable[i][0],producttocategoriestable[i][1],producttocategoriestable[i][2])
+    for i in range(len(producttable)):
         createProduct(producttable[i][0],producttable[i][1],producttable[i][3],producttable[i][4],producttable[i][5],producttable[i][2])
+    for i in range(len(regiontable)):
+        createRegion(regiontable[i][0], regiontable[i][1])
