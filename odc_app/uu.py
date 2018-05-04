@@ -6,6 +6,8 @@ from faker import Faker
 fake = Faker()
 from faker.providers import BaseProvider
 from collections import namedtuple
+import datetime
+
 ####################################################################
 # create new provider class
 class product(BaseProvider):
@@ -266,15 +268,15 @@ def generatinformation():
 
     for i in range (3):
 
-        MyStruct=( '1990/1/2',g.createPassword(10),g.usPhoneNumber(),g.email(g.firstName(),g.lastName()),g.firstName(),g.lastName(),k[i],'admin')
+        MyStruct=( datetime.datetime.utcnow(),g.createPassword(10),g.usPhoneNumber(),g.email(g.firstName(),g.lastName()),g.firstName(),g.lastName(),k[i],'admin')
         a.append(MyStruct)
     for i in range(3,8):
         MyStruct = (
-        '1990/1/2', g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
+        datetime.datetime.utcnow(), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
         a.append(MyStruct)
     for i in range(8,100):
         MyStruct = (
-            '1990/1/2', g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
+            datetime.datetime.utcnow(), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
             'User')
         a.append(MyStruct)
    # k=0
