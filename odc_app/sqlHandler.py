@@ -382,7 +382,7 @@ def createUser(role, email, password, firstName, lastName, phoneNumber, birthdat
 
 #run just the database in command line mode to create content directly
 if __name__ == '__main__':
-     regiontable = region()
+    regiontable = region()
     countrytable=country()
     addresstable=address()
     roletable1=roletable()
@@ -423,3 +423,4 @@ if __name__ == '__main__':
         createProduct(producttable[i][0],producttable[i][1],producttable[i][3],producttable[i][4],producttable[i][5],producttable[i][2])
     for i in range(len(regiontable)):
         createRegion(regiontable[i][0], regiontable[i][1])
+    
