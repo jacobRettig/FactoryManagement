@@ -266,15 +266,15 @@ def generatinformation():
 
     for i in range (3):
 
-        MyStruct=( g.birthday(18),g.createPassword(10),g.usPhoneNumber(),g.email(g.firstName(),g.lastName()),g.firstName(),g.lastName(),k[i],'admin')
+        MyStruct=( '1990/1/2',g.createPassword(10),g.usPhoneNumber(),g.email(g.firstName(),g.lastName()),g.firstName(),g.lastName(),k[i],'admin')
         a.append(MyStruct)
     for i in range(3,8):
         MyStruct = (
-        g.birthday(18), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
+        '1990/1/2', g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i], 'warehousemanager')
         a.append(MyStruct)
     for i in range(8,100):
         MyStruct = (
-            g.birthday(18), g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
+            '1990/1/2', g.createPassword(10), g.usPhoneNumber(), g.email(g.firstName(),g.lastName()), g.firstName(), g.lastName(), k[i],
             'User')
         a.append(MyStruct)
    # k=0
