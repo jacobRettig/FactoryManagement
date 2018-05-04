@@ -212,23 +212,15 @@ class region(BaseProvider):
         return x
 # then add new provider to faker instance
 fake.add_provider(region)
-
-
-
-
-
-
-#start create table
-#################################################################
 ##############################################################
 #create region table
 def region():
     a=[]
-    MyStruct = namedtuple("MyStruct", " regionID RegionName, RegionDescription ")
+    MyStruct = namedtuple("MyStruct", " RegionName, RegionDescription ")
 
     c = fake.allregion()
     for i in range(0, len(c)-1):
-        MyStruct = (i,c[i], regiondes(c[i]) )
+        MyStruct = (c[i], regiondes(c[i]) )
 
     # MyStruct=(c[i][0], productdescription(c[i].productname),random.randint(1,1000),productvalue(c[i].productname),productunit(c[i].productname)),)
         a.append(MyStruct)
@@ -306,7 +298,7 @@ def product():
     b=generatinformation()
 
     for i in range(8,100):
-        c=fake.product()
+        c=fake.prodcut()
         MyStruct = (c, productvalue(c), productdescription(c), imagedata(c), random.randint(1,1000),b[i][3])
         a.append(MyStruct)
     return a
@@ -330,11 +322,11 @@ def productattribution():
     a=[]
 
 
-    MyStruct = namedtuple("MyStruct", " attributionname, productname, value ")
+    MyStruct = namedtuple("MyStruct", " attributionname, productname,productowner, value ")
 
-    k=fake.allproduct()
+    k=product()
     for i in range(len(k)):
-        MyStruct=(categories(k[i]),k[i],productvalue(k[i]))
+        MyStruct=(categories(k[i][0]),k[i][0],k[i][5],productvalue(k[i][0]))
         a.append(MyStruct)
     return a
 ################################################################
@@ -342,23 +334,24 @@ def productattribution():
 #create Warehouse table
 def Warehouse():
     a=[]
-    MyStruct = namedtuple("MyStruct", " warehouseID, UserName, description, capacity,addressID ")
+    MyStruct = namedtuple("MyStruct", " UserName, description, capacity,addressID ")
 
     c =generatinformation()
     d=productattribution()
     k=fake.allregion()
     for i in range(len(k)):
-        MyStruct = (i,c[i+3][3],k[i],random.randint(10000,100000),random.randint(0,99) )
+        MyStruct = (c[i+3][3],k[i],random.randint(10000,100000),random.randint(0,99) )
         a.append(MyStruct)
     return a
 ################################################################################################
 def Warehousestorage():
     a=[]
-    MyStruct = namedtuple("MyStruct", " warehouseID, refilldate, state, price, ProductName ")
+    MyStruct = namedtuple("MyStruct", "  refilldate, price, ProductName,productowner ")
     k=product()
 
-    for i in range(len(k)):
-        MyStruct = (random.randint(0,4),g.randomDate(),fake.state1(),productvalue(k[i][0]),k[i][0] )
+    for i in range(8,100):
+
+        MyStruct = (g.randomDate(),productvalue(k[i][0]),k[i][0],k[i][5] )
         a.append(MyStruct)
     return a
 #####################################################################################################
@@ -380,11 +373,11 @@ def categories():
 #table producttocategories
 def producttocategories():
     a=[]
-    MyStruct = namedtuple("MyStruct", " categoryname, productname ")
-    c=fake.allproduct()
+    MyStruct = namedtuple("MyStruct", " categoryname, productname,productowner ")
+    c=product()
     for i in range(len(c)):
 
-        MyStruct = (categories(c[i]),c[i])
+        MyStruct = (categories(c[i][0]),c[i][0],c[i][5])
         a.append(MyStruct)
     return a
 #############################################################################################################
