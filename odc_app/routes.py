@@ -55,7 +55,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    form = getRegistrationForm(DB.getRegions())
+    form = getRegistrationForm(DB.getRegions(), DB.getCountries())
     if form.validate_on_submit():
         if DB.createUser('Customer', form['Email'], form['Password'], form['First Name'], form['Last Name'], form['Phone'], form['Date of Birth'], form['Country'], form['Region'], form['1st Line Address'], form['2nd Line Address']):
             login_user(User.createUser(form['Email'], form['Password']))
@@ -97,9 +97,9 @@ def create_category():
 
 @app.errorhandler(401)
 def unauthorized_access(e):
-	return render_template('401.html', title='Unauthorized Access'), 401
+    return render_template('401.html', title='Unauthorized Access'), 401
 
 @app.errorhandler(404)
 def page_not_found(e):
-	return render_template('404.html', title='Page Not Found'), 404
+    return render_template('404.html', title='Page Not Found'), 404
 

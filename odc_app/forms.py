@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired, EqualTo, Email, ValidationError, Le
 from wtforms.fields.html5 import DateField
 import phonenumbers
 
-def getRegistrationForm(regions):
+def getRegistrationForm(regions, countries):
     class RegistrationForm(FlaskForm):
         first_name = StringField('First Name', validators=[DataRequired()])
         last_name = StringField('Last Name', validators=[DataRequired()])
@@ -20,8 +20,9 @@ def getRegistrationForm(regions):
         queried from the database.
 
         """
-       	# region = SelectField('Region', choices=list(map(lambda x:(x, x), regions)), validators=[DataRequired()])
-        country = StringField('Country', validators=[DataRequired()])
+       	region = SelectField('Region', choices=list(map(lambda x:(x, x), regions)), validators=[DataRequired()])
+        country = SelectField('Country', choices=list(map(lambda x:(x, x), countries)), validators=[DataRequired()])
+        
         addressFirstLine = StringField('1st Line Address', validators=[DataRequired()])
         addressSecondLine = StringField('2nd Line Address')
         email = StringField('Email', validators=[DataRequired(), Email()])
